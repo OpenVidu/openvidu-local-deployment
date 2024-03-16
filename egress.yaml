@@ -1,0 +1,23 @@
+redis:
+    address: redis:6379
+    username: ""
+    password: redispassword
+    db: 0
+    use_tls: false
+api_key: key1
+api_secret: abcdefghijklmnopqrstuvwxyz123456
+ws_url: ws://openvidu:7880
+health_port: 9091
+
+# files will be moved here when uploads fail.
+backup_storage: /home/egress/backup_storage
+
+# Storage for recordings
+s3:
+    access_key: minioadmin
+    secret: minioadmin
+    # Default region for minio
+    region: us-east-1
+    endpoint: http://minio:9000
+    bucket: openvidu
+    force_path_style: true

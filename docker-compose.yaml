@@ -1,0 +1,205 @@
+services:
+
+  caddy-proxy:
+    image: docker.io/wcm65pck/openvidu-caddy-local:main
+    container_name: caddy-proxy
+    restart: unless-stopped
+    environment:
+      - LOCAL_DOMAIN=${LOCAL_DOMAIN:-?}
+      - USE_TLS=${USE_TLS:-?}
+      - LIVEKIT_API_KEY=${LIVEKIT_API_KEY:-?}
+      - LIVEKIT_API_SECRET=${LIVEKIT_API_SECRET:-?}
+      - DASHBOARD_ADMIN_USERNAME=${DASHBOARD_ADMIN_USERNAME:-?}
+      - DASHBOARD_ADMIN_PASSWORD=${DASHBOARD_ADMIN_PASSWORD:-?}
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY:-?}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY:-?}
+      - OPENVIDU_SHIM_SECRET=${OPENVIDU_SHIM_SECRET:-?}
+    ports:
+      - 4443:4443
+      - 9000:9000
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: unless-stopped
+    volumes:
+      - redis:/data
+    command: >
+      redis-server
+      --bind 0.0.0.0
+      --requirepass ${REDIS_PASSWORD:-?}
+
+  minio:
+    image: bitnami/minio:2024.3.15-debian-12-r0
+    container_name: minio
+    restart: unless-stopped
+    environment:
+      - LOCAL_DOMAIN=${LOCAL_DOMAIN:-?}
+      - MINIO_ROOT_USER=${MINIO_ACCESS_KEY:-?}
+      - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY:-?}
+      - MINIO_DEFAULT_BUCKETS=openvidu
+      - MINIO_CONSOLE_SUBPATH=/minio-console
+    command: >
+      /bin/sh -c "
+      URL=https://$$LOCAL_DOMAIN:4443/minio-console/;
+      if [ \"$USE_TLS\" = 'false' ]; then
+        URL=$(echo $$URL | sed 's/https/http/');
+      fi &&
+      export MINIO_BROWSER_REDIRECT_URL=$$URL &&
+      /opt/bitnami/scripts/minio/run.sh"
+    volumes:
+      - ./minio/data:/bitnami/minio/data
+      - minio-certs:/certs
+    depends_on:
+      setup-volumes:
+        condition: service_completed_successfully
+
+  mongo:
+    image: bitnami/mongodb:7.0.6-debian-12-r0
+    container_name: mongo
+    restart: unless-stopped
+    volumes:
+      - ./mongo/data:/bitnami/mongodb/
+    environment:
+      - MONGODB_ROOT_USER=${MONGO_ADMIN_USERNAME:-?}
+      - MONGODB_ROOT_PASSWORD=${MONGO_ADMIN_PASSWORD:-?}
+
+  dashboard:
+    image: docker.io/wcm65pck/openvidu-dashboard:main
+    container_name: dashboard
+    restart: unless-stopped
+    environment:
+      - SERVER_PORT=5000
+      - ADMIN_USERNAME=${DASHBOARD_ADMIN_USERNAME:-?}
+      - ADMIN_PASSWORD=${DASHBOARD_ADMIN_PASSWORD:-?}
+      - DATABASE_URL=mongodb://mongoadmin:mongoadmin@mongo:27017
+    logging:
+      options:
+        max-size: "${DOCKER_LOGS_MAX_SIZE:-200M}"
+
+  openvidu:
+    image: docker.io/wcm65pck/openvidu-livekit:main
+    restart: unless-stopped
+    container_name: openvidu
+    environment:
+      - LIVEKIT_INGRESS_RTMP_BASE_URL=rtmp://${LOCAL_DOMAIN:-?}:1935/rtmp
+      - LIVEKIT_INGRESS_WHIP_BASE_URL=http://${LOCAL_DOMAIN:-?}:8080/whip
+    ports:
+      - "7880:7880"
+      - "3478:3478/udp"
+    command: --config /etc/livekit.yaml
+    volumes:
+      - ./livekit.yaml:/etc/livekit.yaml
+
+  ingress:
+    image: livekit/ingress:v1.2.0
+    container_name: ingress
+    restart: unless-stopped
+    ports:
+      - "1935:1935"
+      - "8080:8080"
+      - "7885:7885/udp"
+    environment:
+      - INGRESS_CONFIG_FILE=/etc/ingress.yaml
+    volumes:
+      - ./ingress.yaml:/etc/ingress.yaml
+
+  egress:
+    image: livekit/egress:v1.8.0
+    restart: unless-stopped
+    container_name: egress
+    environment:
+      - EGRESS_CONFIG_FILE=/etc/egress.yaml
+    volumes:
+      - ./egress.yaml:/etc/egress.yaml
+      - ./egress/home/egress:/home/egress/
+    depends_on:
+      setup-volumes:
+        condition: service_completed_successfully
+
+  ready-check:
+    image: curlimages/curl:8.6.0
+    container_name: readycheck
+    restart: on-failure
+    environment:
+      - LOCAL_DOMAIN=${LOCAL_DOMAIN:-?}
+      - USE_TLS=${USE_TLS:-?}
+    depends_on:
+      - openvidu
+      - ingress
+      - egress
+      - dashboard
+      - minio
+      - mongo
+    command: >
+      /bin/sh -c "
+        until $(curl --silent --head --fail http://openvidu:7880 > /dev/null); do
+          echo 'Waiting for OpenVidu to start...';
+          sleep 1;
+        done;
+        until $(curl --silent --head --fail http://ingress:9091 > /dev/null); do
+          echo 'Waiting for Ingress to start...';
+          sleep 1;
+        done;
+        until $(curl --silent --head --fail http://egress:9091 > /dev/null); do
+          echo 'Waiting for Ingress to start...';
+          sleep 1;
+        done;
+        until $(curl --silent --head --fail http://dashboard:5000 > /dev/null); do
+          echo 'Waiting for Dashboard to start...';
+          sleep 1;
+        done;
+        until $(curl --silent --head --fail http://minio:9000/minio/health/live > /dev/null); do
+          echo 'Waiting for Minio to start...';
+          sleep 1;
+        done;
+        until $(curl --silent --head --fail http://minio:9001/minio-console > /dev/null); do
+          echo 'Waiting for Mongo to start...';
+          sleep 1;
+        done;
+        until $(curl --connect-timeout 10 --silent http://mongo:27017 > /dev/null); do
+          echo 'Waiting for Mongo to start...';
+          sleep 1;
+        done;
+        URL=https://$$LOCAL_DOMAIN:4443/
+        if [ \"$USE_TLS\" = 'false' ]; then
+          URL=$(echo $$URL | sed 's/https/http/');
+        fi &&
+        sleep 10;
+        echo '';
+        echo '';
+        echo '------------------------';
+        echo 'OpenVidu is ready!';
+        echo \"Open $$URL in your browser\";
+        echo '------------------------';
+        echo '';
+        echo '';
+      "
+
+  setup-volumes:
+    image: busybox
+    container_name: setup-volumes
+    restart: on-failure
+    volumes:
+      - ./minio:/minio
+      - ./mongo:/mongo
+      - ./egress:/egress
+    user: root
+    command: >
+      /bin/sh -c "
+        mkdir -p /minio/data &&
+        mkdir -p /mongo/data &&
+        mkdir -p /mongo/data/ &&
+        mkdir -p /egress/home/egress &&
+        chown 1001:1001 /minio /minio/data
+        chown 1001:1001 /mongo /mongo/data
+        chown 1000:1000 /egress
+        chown 1000:1000 /egress/home
+        chown 1000:1000 /egress/home/egress
+      "
+
+
+volumes:
+  minio-certs:
+  mongodb-config:
+  redis:

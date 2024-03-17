@@ -4,8 +4,6 @@ services:
     image: docker.io/wcm65pck/openvidu-caddy-local:main
     container_name: caddy-proxy
     restart: unless-stopped
-    extra_hosts:
-      openvidu: 172.30.0.1
     environment:
       - LOCAL_DOMAIN=${LOCAL_DOMAIN:-?}
       - USE_TLS=${USE_TLS:-?}
@@ -19,8 +17,6 @@ services:
     ports:
       - 4443:4443
       - 9000:9000
-    networks:
-      - openvidu-net
 
   redis:
     image: redis:latest
@@ -28,14 +24,10 @@ services:
     restart: unless-stopped
     volumes:
       - redis:/data
-    ports:
-      - 6379:6379
     command: >
       redis-server
       --bind 0.0.0.0
       --requirepass ${REDIS_PASSWORD:-?}
-    networks:
-      - openvidu-net
 
   minio:
     image: bitnami/minio:2024.3.15-debian-12-r0
@@ -58,8 +50,6 @@ services:
     volumes:
       - ./minio/data:/bitnami/minio/data
       - minio-certs:/certs
-    networks:
-      - openvidu-net
     depends_on:
       setup-volumes:
         condition: service_completed_successfully
@@ -70,13 +60,9 @@ services:
     restart: unless-stopped
     volumes:
       - ./mongo/data:/bitnami/mongodb/
-    ports:
-      - 27017:27017
     environment:
       - MONGODB_ROOT_USER=${MONGO_ADMIN_USERNAME:-?}
       - MONGODB_ROOT_PASSWORD=${MONGO_ADMIN_PASSWORD:-?}
-    networks:
-      - openvidu-net
 
   dashboard:
     image: docker.io/wcm65pck/openvidu-dashboard:main
@@ -87,20 +73,20 @@ services:
       - ADMIN_USERNAME=${DASHBOARD_ADMIN_USERNAME:-?}
       - ADMIN_PASSWORD=${DASHBOARD_ADMIN_PASSWORD:-?}
       - DATABASE_URL=mongodb://mongoadmin:mongoadmin@mongo:27017
-    networks:
-      - openvidu-net
+    logging:
+      options:
+        max-size: "${DOCKER_LOGS_MAX_SIZE:-200M}"
 
   openvidu:
     image: docker.io/wcm65pck/openvidu-livekit:main
     restart: unless-stopped
     container_name: openvidu
-    network_mode: host
-    extra_hosts:
-      redis: 172.30.0.1
-      mongo: 172.30.0.1
     environment:
       - LIVEKIT_INGRESS_RTMP_BASE_URL=rtmp://${LOCAL_DOMAIN:-?}:1935/rtmp
       - LIVEKIT_INGRESS_WHIP_BASE_URL=http://${LOCAL_DOMAIN:-?}:8080/whip
+    ports:
+      - "7880:7880"
+      - "3478:3478/udp"
     command: --config /etc/livekit.yaml
     volumes:
       - ./livekit.yaml:/etc/livekit.yaml
@@ -109,8 +95,6 @@ services:
     image: livekit/ingress:v1.2.0
     container_name: ingress
     restart: unless-stopped
-    extra_hosts:
-      openvidu: 172.30.0.1
     ports:
       - "1935:1935"
       - "8080:8080"
@@ -119,22 +103,16 @@ services:
       - INGRESS_CONFIG_FILE=/etc/ingress.yaml
     volumes:
       - ./ingress.yaml:/etc/ingress.yaml
-    networks:
-      - openvidu-net
 
   egress:
     image: livekit/egress:v1.8.0
     restart: unless-stopped
     container_name: egress
-    extra_hosts:
-      openvidu: 172.30.0.1
     environment:
       - EGRESS_CONFIG_FILE=/etc/egress.yaml
     volumes:
       - ./egress.yaml:/etc/egress.yaml
       - ./egress/home/egress:/home/egress/
-    networks:
-      - openvidu-net
     depends_on:
       setup-volumes:
         condition: service_completed_successfully
@@ -143,8 +121,6 @@ services:
     image: curlimages/curl:8.6.0
     container_name: readycheck
     restart: on-failure
-    extra_hosts:
-      openvidu: 172.30.0.1
     environment:
       - LOCAL_DOMAIN=${LOCAL_DOMAIN:-?}
       - USE_TLS=${USE_TLS:-?}
@@ -199,8 +175,6 @@ services:
         echo '';
         echo '';
       "
-    networks:
-      - openvidu-net
 
   setup-volumes:
     image: busybox
@@ -223,25 +197,7 @@ services:
         chown 1000:1000 /egress/home
         chown 1000:1000 /egress/home/egress
       "
-    networks:
-      - openvidu-net
 
-# As openvidu needs to run in host network, we need to create a custom network
-# So in this way, the same gateway IP can be used and therefore allow
-# openvidu to communicate with redis and mongo through the gateway IP.
-# On the other hand, caddy-proxy also needs to communicate with openvidu
-# through the gateway IP
-networks:
-  openvidu-net:
-    name: openvidu-net
-    driver: bridge
-    attachable: true
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.30.0.0/16
-          ip_range: 172.30.5.0/24
-          gateway: 172.30.0.1
 
 volumes:
   minio-certs:

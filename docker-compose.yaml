@@ -4,6 +4,8 @@ services:
     image: docker.io/wcm65pck/openvidu-caddy-local:main
     container_name: caddy-proxy
     restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       - LOCAL_DOMAIN=${LOCAL_DOMAIN:-?}
       - USE_TLS=${USE_TLS:-?}
@@ -17,6 +19,7 @@ services:
     ports:
       - 4443:4443
       - 9000:9000
+      - 8000:8000
 
   redis:
     image: redis:7.2.4-alpine
@@ -164,7 +167,10 @@ services:
           URL=\$(echo \$$URL | sed 's/https/http/')
         fi
 
-        sleep 10
+        for i in $(seq 1 10); do
+          echo 'Starting OpenVidu... Please be patient...'
+          sleep 1
+        done;
         echo ''
         echo ''
         echo '------------------------'

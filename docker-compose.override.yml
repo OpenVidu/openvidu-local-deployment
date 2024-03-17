@@ -1,10 +1,8 @@
 services:
-  app:
+  default-app:
     image: docker.io/wcm65pck/openvidu-call-demo:main
     container_name: openvidu-call
     restart: on-failure
-    ports:
-      - 5442:5442
     environment:
       - SERVER_PORT=5442
       - USE_TLS=${USE_TLS:-?}

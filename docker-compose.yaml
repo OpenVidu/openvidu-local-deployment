@@ -19,7 +19,7 @@ services:
       - 9000:9000
 
   redis:
-    image: redis:latest
+    image: redis:7.2.4-alpine
     container_name: redis
     restart: unless-stopped
     volumes:

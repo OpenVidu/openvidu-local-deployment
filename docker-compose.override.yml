@@ -1,0 +1,19 @@
+services:
+  app:
+    image: docker.io/wcm65pck/openvidu-call-demo:main
+    container_name: openvidu-call
+    restart: on-failure
+    ports:
+      - 5442:5442
+    environment:
+      - SERVER_PORT=5442
+      - USE_TLS=${USE_TLS:-?}
+      - LIVEKIT_URL=wss://${LOCAL_DOMAIN:-?}:4443/
+      - LIVEKIT_URL_PRIVATE=ws://openvidu:7880/
+      - LIVEKIT_API_KEY=${LIVEKIT_API_KEY}
+      - LIVEKIT_API_SECRET=${LIVEKIT_API_SECRET}
+      - CALL_PRIVATE_ACCESS=DISABLED
+      - CALL_USER=${CALL_USER:-}
+      - CALL_SECRET=${CALL_SECRET:-}
+      - CALL_ADMIN_SECRET=${CALL_ADMIN_SECRET:-}
+      - CALL_RECORDING=${CALL_RECORDING:-}

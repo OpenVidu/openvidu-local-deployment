@@ -45,9 +45,11 @@ If your IP for example is `192.168.1.10`, the URL of your deployment in your LAN
 
 ### About `openvidu-local.dev`
 
-This is a magic domain name like [nip.io](https://nip.io) or [traefik.me](https://traefik.me), which can resolve to any IP specified as a subdomain. It also offers a wildcard certificates which is automatically used by `caddy-proxy` in the local deployment to provide HTTPS for any subdomain.
+When you develop WebRTC applications, you require a secure context (HTTPS) to access the camera and microphone. This is a requirement of the WebRTC standard. 
 
-This is useful for local development, as you can access your deployment using a domain name instead of an IP address, and you can use HTTPS without having to deal with self-signed certificates, **BUT it is not suitable for production environments.**
+With the aim of making it easier to develop with OpenVidu, we provide a magic domain name `openvidu-local.dev` which can resolve to any IP specified as a subdomain and it offers a valid wildcard certificate for HTTPS. It is similar to [nip.io](https://nip.io) or [traefik.me](https://traefik.me) or [localtls](https://github.com/Corollarium/localtls).
+
+But take into account that this is just as secure as a HTTP connection, so it is not suitable for production environments.
 
 ### Edge cases:
 

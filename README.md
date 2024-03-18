@@ -13,6 +13,7 @@ On **Linux**:
 
 ```sh
 git clone https://github.com/OpenVidu/openvidu-local-deployment
+cd openvidu-local-deployment
 docker compose up
 ```
 

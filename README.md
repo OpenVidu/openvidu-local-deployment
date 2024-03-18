@@ -48,3 +48,14 @@ If your IP for example is `192.168.1.10`, the URL of your deployment in your LAN
 This is a magic domain name like [nip.io](https://nip.io) or [traefik.me](https://traefik.me), which can resolve to any IP specified as a subdomain. It also offers a wildcard certificates which is automatically used by `caddy-proxy` in the local deployment to provide HTTPS for any subdomain.
 
 This is useful for local development, as you can access your deployment using a domain name instead of an IP address, and you can use HTTPS without having to deal with self-signed certificates, **BUT it is not suitable for production environments.**
+
+### Edge cases:
+
+- Linux: All works just fine
+- Windows (Docker desktop):
+    It looks like there is a little edge case which we are fighting with WSL + Docker. Looks related with this: https://stackoverflow.com/questions/61629450/webrtc-does-not-work-in-the-modern-browsers-when-a-peer-is-not-behind-a-nat-beca
+
+    The behaviour is the following
+    - **Chrome based browsers**: Looks like everything works fine. ICE protocol finds a path to communicate the browser and openvidu.
+    - **Firefox browser**:
+     The only working candidate in Firefox is filtered, I was able to workaround this limitation with `media.peerconnection.ice.obfuscate_host_addresses=false`.

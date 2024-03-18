@@ -151,7 +151,7 @@ services:
 
   ready-check:
     image: curlimages/curl:8.6.0
-    container_name: readycheck
+    container_name: ready-check
     restart: on-failure
     environment:
       - LOCAL_DOMAIN=${LOCAL_DOMAIN:-?}

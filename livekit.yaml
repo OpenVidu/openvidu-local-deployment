@@ -30,7 +30,7 @@ keys:
 webhook:
     api_key: key1
     urls:
-        - http://openvidu-shim:5443/openvidu/api/webhook
+        - http://openvidu-v2compatibility:4443/openvidu/api/webhook
 logging:
     # Logging level for the LiveKit server.
     # Values: "debug", "info" (default), "warn", "error".

@@ -22,18 +22,11 @@ When the deployment is ready you will see the following message in the logs:
 ```
 readycheck     | ------------------------
 readycheck     | OpenVidu is ready!
-readycheck     | Open https://openvidu-local.dev:4443/ in your browser
+readycheck     | Open http://localhost:4443/ in your browser
 readycheck     | ------------------------
 ```
 
 ## Additional Notes
-
-### Using localhost
-
-- This deployment is configured to use a domain name which points to `127.0.0.1` by default. If you want to use `localhost` instead, you can change the `LOCAL_DOMAIN` variable in the `.env` file.
-
-### Enabling and Disabling TLS
-- You can enable and disable TLS by setting `USE_TLS` to `true` or `false` in the `.env` file.
 
 ### LAN Access (Optional)
 
@@ -41,12 +34,13 @@ If you want to access the deployment in your LAN for Android or iOS devices, you
 
 1. Get the private IP of your computer in your LAN.
 2. Configure your Firewall to allow devices in your LAN to access your computer.
+3. Change `LOCAL_DOMAIN` in the `.env` file to have the IP of your computer in your LAN.
 
-If your IP for example is `192.168.1.10`, the URL of your deployment in your LAN will be `https://192-168-1-10.openvidu-local.dev:4443/`.
+    If your IP for example is `192.168.1.10`, `LOCAL_DOMAIN` should be `192-168-1-10.openvidu-local.dev`.
 
 ### About `openvidu-local.dev`
 
-When you develop WebRTC applications, you require a secure context (HTTPS) to access the camera and microphone. This is a requirement of the WebRTC standard. 
+When you develop WebRTC applications, you require a secure context (HTTPS) to access the camera and microphone. This is a requirement of the WebRTC standard.
 
 With the aim of making it easier to develop with OpenVidu, we provide a magic domain name `openvidu-local.dev` which can resolve to any IP specified as a subdomain and it offers a valid wildcard certificate for HTTPS. It is similar to [nip.io](https://nip.io) or [traefik.me](https://traefik.me) or [localtls](https://github.com/Corollarium/localtls).
 

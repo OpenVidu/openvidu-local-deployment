@@ -85,7 +85,6 @@ services:
       - LIVEKIT_INGRESS_RTMP_BASE_URL=rtmp://${LOCAL_DOMAIN:-?}:1935/rtmp
       - LIVEKIT_INGRESS_WHIP_BASE_URL=http://${LOCAL_DOMAIN:-?}:8080/whip
     ports:
-      - "7880:7880"
       - "3478:3478/udp"
     command: --config /etc/livekit.yaml
     volumes:

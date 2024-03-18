@@ -120,6 +120,39 @@ services:
       setup-volumes:
         condition: service_completed_successfully
 
+  openvidu-v2compatibility:
+    image: docker.io/wcm65pck/openvidu-v2compatibility:main
+    restart: unless-stopped
+    container_name: openvidu-v2compatibility
+    command: >
+      /bin/sh -c "
+      OV_URL=https://$$LOCAL_DOMAIN:4443/;
+      LK_URL=wss://$$LOCAL_DOMAIN:4443/;
+      if [ \"$USE_TLS\" = 'false' ]; then
+        OV_URL=$(echo $$OV_URL | sed 's/https/http/');
+        LK_URL=$(echo $$LK_URL | sed 's/wss/ws/');
+      fi &&
+      export OPENVIDU_SHIM_URL=$$OV_URL &&
+      export LIVEKIT_URL=$$LK_URL &&
+      node dist/server.js"
+    environment:
+      - USE_TLS=${USE_TLS:-?}
+      - LOCAL_DOMAIN=${LOCAL_DOMAIN:-?}
+      - SERVER_PORT=4443
+      - OPENVIDU_SHIM_SECRET=${OPENVIDU_SHIM_SECRET:-?}
+      - LIVEKIT_URL_PRIVATE=ws://openvidu:7880
+      - LIVEKIT_API_KEY=${LIVEKIT_API_KEY:-?}
+      - LIVEKIT_API_SECRET=${LIVEKIT_API_SECRET:-?}
+      - OPENVIDU_PRO_AWS_S3_BUCKET=openvidu
+      - OPENVIDU_PRO_AWS_S3_SERVICE_ENDPOINT=http://minio:9000
+      - OPENVIDU_PRO_AWS_S3_ACCESS_KEY=${MINIO_ACCESS_KEY:-?}
+      - OPENVIDU_PRO_AWS_S3_SECRET_KEY=${MINIO_SECRET_KEY:-?}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-?}
+      - REDIS_DB=0
+      - OPENVIDU_WEBHOOK=false
+
   ready-check:
     image: curlimages/curl:8.6.0
     container_name: readycheck

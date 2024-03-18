@@ -29,10 +29,16 @@ http{{if .IsTLS}}s{{end}}://{{.DomainName}}:4443 {
 		get_certificate http https://certs.openvidu-local.dev/caddy.pem
 	}{{else}}tls internal{{end}}{{end}}
 
-	# Api
+	# API
 	@openvidu path /twirp/* /rtc/* /rtc
 	handle @openvidu {
 		reverse_proxy http://openvidu:7880
+	}
+
+	# OpenVidu v2 API
+	@openvidu_v2 path /openvidu/api/* /openvidu/ws/*
+	handle @openvidu_v2 {
+		reverse_proxy http://openvidu-v2compatibility:4443
 	}
 
 	# Minio console

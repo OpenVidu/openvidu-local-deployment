@@ -76,9 +76,6 @@ services:
       - ADMIN_USERNAME=${DASHBOARD_ADMIN_USERNAME:-?}
       - ADMIN_PASSWORD=${DASHBOARD_ADMIN_PASSWORD:-?}
       - DATABASE_URL=mongodb://mongoadmin:mongoadmin@mongo:27017
-    logging:
-      options:
-        max-size: "${DOCKER_LOGS_MAX_SIZE:-200M}"
 
   openvidu:
     image: docker.io/wcm65pck/openvidu-livekit:main

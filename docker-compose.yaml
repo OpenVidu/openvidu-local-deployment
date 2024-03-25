@@ -104,7 +104,7 @@ services:
       - ./ingress.yaml:/etc/ingress.yaml
 
   egress:
-    image: livekit/egress:v1.8.0
+    image: livekit/egress:v1.8.2
     restart: unless-stopped
     container_name: egress
     environment:
@@ -227,9 +227,9 @@ services:
         mkdir -p /egress/home/egress &&
         chown 1001:1001 /minio /minio/data
         chown 1001:1001 /mongo /mongo/data
-        chown 1000:1000 /egress
-        chown 1000:1000 /egress/home
-        chown 1000:1000 /egress/home/egress
+        chown 1001:1001 /egress
+        chown 1001:1001 /egress/home
+        chown 1001:1001 /egress/home/egress
       "
 
 

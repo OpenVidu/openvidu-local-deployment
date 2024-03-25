@@ -15,3 +15,6 @@ services:
       - CALL_SECRET=${CALL_SECRET:-}
       - CALL_ADMIN_SECRET=${CALL_ADMIN_SECRET:-}
       - CALL_RECORDING=${CALL_RECORDING:-}
+    depends_on:
+      setup:
+        condition: service_completed_successfully

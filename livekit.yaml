@@ -33,7 +33,7 @@ webhook:
         - http://openvidu-v2compatibility:4443/openvidu/api/webhook
 ingress:
     rtmp_base_url: rtmp://localhost:1935/rtmp
-    whip_base_url: http://localhost:8080/whip
+    whip_base_url: http://localhost:8085/whip
 logging:
     # Logging level for the LiveKit server.
     # Values: "debug", "info" (default), "warn", "error".

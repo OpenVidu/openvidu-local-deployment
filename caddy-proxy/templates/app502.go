@@ -1,5 +1,9 @@
 package templates
 
+type App502Data struct {
+	AppPort string
+}
+
 const App502Template = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -35,7 +39,7 @@ const App502Template = `<!DOCTYPE html>
             <div class="error-code">502 - Bad Gateway</div>
             <h1 class="display-5">OpenVidu Application Not Found</h1>
 			<hr class="my-4">
-            <p>If you are developing an application and <b>run it locally at port 5442</b>, you will see here your application, under
+            <p>If you are developing an application and <b>run it locally at port {{.AppPort}}</b>, you will see here your application, under
                 the same domain and TLS certificate as OpenVidu.</p>
         </div>
     </div>

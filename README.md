@@ -34,9 +34,9 @@ If you want to access the deployment in your LAN for Android or iOS devices, you
 
 1. Get the private IP of your computer in your LAN.
 2. Configure your Firewall to allow devices in your LAN to access your computer.
-3. Change `LOCAL_DOMAIN` in the `.env` file to have the IP of your computer in your LAN.
+3. Change `LAN_DOMAIN` in the `.env` file to have the IP of your computer in your LAN.
 
-    If your IP for example is `192.168.1.10`, `LOCAL_DOMAIN` should be `192-168-1-10.openvidu-local.dev`.
+    If your IP for example is `192.168.1.10`, `LAN_DOMAIN` should be `192-168-1-10.openvidu-local.dev`.
 
 ### About `openvidu-local.dev`
 

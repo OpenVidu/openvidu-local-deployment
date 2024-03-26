@@ -1,5 +1,7 @@
 #!/bin/sh
 
+. /scripts/utils.sh
+
 wait_for_service() {
   SERVICE_NAME=$1
   SERVICE_URL=$2
@@ -26,10 +28,7 @@ wait_for_service 'Minio' 'http://minio:9000/minio/health/live'
 wait_for_service 'Minio Console' 'http://minio:9001/minio-console'
 wait_for_service 'Mongo' 'http://mongo:27017' --connect-timeout 10 --silent
 
-URL=https://$LOCAL_DOMAIN:4443/
-if [ "$USE_TLS" = 'false' ]; then
-  URL=$(echo $URL | sed 's/https/http/')
-fi
+URL=$(getDeploymentUrl)
 
 for i in $(seq 1 10); do
   echo 'Starting OpenVidu... Please be patient...'

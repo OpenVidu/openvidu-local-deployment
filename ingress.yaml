@@ -8,7 +8,7 @@ api_key: key1
 api_secret: abcdefghijklmnopqrstuvwxyz123456
 ws_url: ws://openvidu:7880
 rtmp_port: 1935
-whip_port: 8080
+whip_port: 8085
 http_relay_port: 9090
 health_port: 9091
 logging:

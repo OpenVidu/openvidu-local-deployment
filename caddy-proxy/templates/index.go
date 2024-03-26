@@ -2,9 +2,9 @@ package templates
 
 type IndexData struct {
 	OpenViduVersion        string
-	DomainName             string
-	IsLocalhost            bool
-	IsTLS                  bool
+	LanMode                bool
+	HttpUrl                string
+	HttpsUrl               string
 	DashboardAdminUsername string
 	DashboardAdminPassword string
 	MinioAdminKey          string
@@ -14,14 +14,15 @@ type IndexData struct {
 	OpenViduSecret         string
 }
 
-const IndexTemplate = `<!DOCTYPE html>
+const IndexTemplate = `
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OpenVidu Local Deployment</title>
     <!-- Bootstrap CSS CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <!-- Custom styles -->
     <style>
         .container {
@@ -31,6 +32,7 @@ const IndexTemplate = `<!DOCTYPE html>
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div>
@@ -40,47 +42,76 @@ const IndexTemplate = `<!DOCTYPE html>
                 <span>This deployment is only for development purposes.</span>
             </div>
             <hr class="my-4">
+            {{- if .HttpsUrl }}
+
+            <h2>HTTPS URLs</h2>
+            {{- if .LanMode }}
+            <div class="alert alert-info" role="alert">
+                <span>You can access from any device in your local network using the following URLs:</span>
+            </div>
+            {{- end}}
             <ul>
-                <li><strong>OpenVidu API URL:</strong> <a href="http{{if .IsTLS}}s{{end}}://{{ .DomainName }}:4443" target="_blank">http{{if .IsTLS}}s{{end}}://{{ .DomainName }}:4443</a>
+                <li><strong>OpenVidu and Livekit API: </strong><a href="{{ .HttpsUrl }}"
+                        target="_blank">{{ .HttpsUrl }}</a></li>
+                <li><strong>OpenVidu Dashboard: </strong><a href="{{ .HttpsUrl }}/dashboard"
+                        target="_blank">{{ .HttpsUrl }}/dashboard</a></li>
+                <li><strong>Minio Console: </strong><a href="{{ .HttpsUrl }}/minio-console"
+                        target="_blank">{{ .HttpsUrl }}/minio-console</a></li>
+                <li><strong>OpenVidu Call: </strong><a href="{{ .HttpsUrl }}/openvidu-call"
+                        target="_blank">{{ .HttpsUrl }}/openvidu-call</a></li>
+                <li><strong>Your App: </strong><span>Any App you deploy at port 5442 will be available here: </span>
                     <ul>
-                        <li><strong>Secret:</strong> <code>{{ .OpenViduSecret }}</code></li>
+                        <li><a href="{{ .HttpsUrl }}"
+                                target="_blank">{{ .HttpsUrl }}</a></li>
                     </ul>
                 </li>
-				<li><strong>LiveKit API URL:</strong> <a href="http{{if .IsTLS}}s{{end}}://{{ .DomainName }}:4443" target="_blank">http{{if .IsTLS}}s{{end}}://{{ .DomainName }}:4443</a>
-                    <ul>
-                        <li><strong>API Key:</strong> <code>{{ .LiveKitApiKey }}</code></li>
-                        <li><strong>API Secret:</strong> <code>{{ .LiveKitApiSecret }}</code></li>
-                    </ul>
-                </li>
-				<li><strong>OpenVidu Dashboard:</strong> <a href="http{{if .IsTLS}}s{{end}}://{{ .DomainName }}:4443/dashboard" target="_blank">http{{if .IsTLS}}s{{end}}://{{ .DomainName }}:4443/dashboard</a>
-                    <ul>
-                        <li><strong>Username:</strong> <code>{{ .DashboardAdminUsername }}</code></li>
-                        <li><strong>Password:</strong> <code>{{ .DashboardAdminPassword }}</code></li>
-                    </ul>
-                </li>
-				<li><strong>Minio:</strong> <a href="http{{if .IsTLS}}s{{end}}://{{ .DomainName }}:4443/minio-console" target="_blank">http{{if .IsTLS}}s{{end}}://{{ .DomainName }}:4443/minio-console</a>
-                    <ul>
-                        <li><strong>Minio Admin User:</strong> <code>{{ .MinioAdminKey }}</code></li>
-                        <li><strong>Minio Admin Password:</strong> <code>{{ .MinioAdminSecret }}</code></li>
-                    </ul>
-                </li>
-                <li><strong>OpenVidu Call (Default App):</strong> <a href="http{{if .IsTLS}}s{{end}}://{{ .DomainName }}:4443/openvidu-call" target="_blank">http{{if .IsTLS}}s{{end}}://{{ .DomainName }}:4443/openvidu-call</a></li>
-                <hr class="my-4">
-                <li><strong>Your App:</strong> <a href="http{{if .IsTLS}}s{{end}}://{{ .DomainName }}:8000" target="_blank">http{{if .IsTLS}}s{{end}}://{{ .DomainName }}:8000</a>:
-                <span>If you are developing an application and run it locally at port 5442, you will see your application here, under the same domain and TLS certificate as OpenVidu.</span></li>
             </ul>
             <hr class="my-4">
-            {{- if not .IsLocalhost }}
-                <p>If you want to access this deployment with <code>http(s)://localhost:4443</code>, just change the <code>LOCAL_DOMAIN</code> variable to <code>localhost</code> in the <code>.env</code> file.</p>
-            {{- else }}
-                <p>If you want to access this deployment with <code>http(s)://openvidu-local.dev:4443</code>, just change the <code>LOCAL_DOMAIN</code> variable to <code>openvidu-local.dev</code> in the <code>.env</code> file.</p>
+
             {{- end }}
-            {{- if .IsTLS }}
-                <p>If you want to disable TLS, just change the <code>USE_TLS</code> variable to <code>false</code> in the <code>.env</code> file.</p>
-            {{- else }}
-                <p>If you want to enable TLS, just change the <code>USE_TLS</code> variable to <code>true</code> in the <code>.env</code> file.</p>
-            {{- end }}
+            <h2>HTTP URLs</h2>
+            <ul>
+                <li><strong>OpenVidu and Livekit API: </strong><a href="{{ .HttpUrl }}"
+                        target="_blank">{{ .HttpUrl }}</a></li>
+                <li><strong>OpenVidu Dashboard: </strong><a href="{{ .HttpUrl }}/dashboard"
+                        target="_blank">{{ .HttpUrl }}/dashboard</a></li>
+                <li><strong>Minio Console: </strong><a href="{{ .HttpUrl }}/minio-console"
+                        target="_blank">{{ .HttpUrl }}/minio-console</a></li>
+                {{- if not .HttpsUrl }}
+                <li><strong>OpenVidu Call: </strong><a href="http://localdomain.com:4443/openvidu-call"
+                        target="_blank">http://localdomain.com:4443/openvidu-call</a></li>
+                {{- end }}
+            </ul>
+            <hr class="my-4">
+            <!-- Section with Credentials -->
+            <h2>Credentials</h2>
+            <ul>
+                <li><strong>OpenVidu (Basic auth):</strong>
+                    <ul>
+                        <li>Username: <code>OPENVIDUAPP</code></li>
+                        <li>Password: <code>{{ .OpenViduSecret }}</code></li>
+                    </ul>
+                </li>
+                <li><strong>LiveKit API:</strong>
+                    <ul>
+                        <li>API Key: <code>{{ .LiveKitApiKey }}</code></li>
+                        <li>API Secret: <code>{{ .LiveKitApiSecret }}</code></li>
+                    </ul>
+                </li>
+                <li><strong>OpenVidu Dashboard: </strong>
+                    <ul>
+                        <li>Username: <code>{{ .DashboardAdminUsername }}</code></li>
+                        <li>Password: <code>{{ .DashboardAdminPassword }}</code></li>
+                    </ul>
+                </li>
+                <li><strong>Minio: </strong>
+                    <ul>
+                        <li>User: <code>{{ .MinioAdminKey }}</code></li>
+                        <li>Password: <code>{{ .MinioAdminSecret }}</code></li>
+                    </ul>
+                </li>
+            </ul>
         </div>
-    </div>
 </body>
-</html>`
+</html>
+`

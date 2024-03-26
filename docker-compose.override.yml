@@ -4,9 +4,11 @@ services:
     container_name: openvidu-call
     restart: on-failure
     environment:
+      - USE_TLS=${USE_TLS:-false}
+      - LAN_MODE=${LAN_MODE:-false}
+      - LAN_DOMAIN=${LAN_DOMAIN:-}
+      - LAN_PRIVATE_IP=${LAN_PRIVATE_IP:-}
       - SERVER_PORT=5442
-      - USE_TLS=${USE_TLS:-?}
-      - LIVEKIT_URL=wss://${LOCAL_DOMAIN:-?}:4443/
       - LIVEKIT_URL_PRIVATE=ws://openvidu:7880/
       - LIVEKIT_API_KEY=${LIVEKIT_API_KEY}
       - LIVEKIT_API_SECRET=${LIVEKIT_API_SECRET}
@@ -15,6 +17,10 @@ services:
       - CALL_SECRET=${CALL_SECRET:-}
       - CALL_ADMIN_SECRET=${CALL_ADMIN_SECRET:-}
       - CALL_RECORDING=${CALL_RECORDING:-}
+    volumes:
+      - ./scripts/entrypoint_default_app.sh:/scripts/entrypoint.sh
+      - ./scripts/utils.sh:/scripts/utils.sh
+    entrypoint: /bin/sh /scripts/entrypoint.sh
     depends_on:
       setup:
         condition: service_completed_successfully

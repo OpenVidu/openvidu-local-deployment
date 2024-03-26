@@ -14,6 +14,7 @@ type TemplateData any
 
 var indexData = &templates.IndexData{}
 var caddyData = &templates.CaddyData{}
+var app502Data = &templates.App502Data{}
 
 func main() {
 	err := Initialize()
@@ -21,6 +22,7 @@ func main() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+
 	rawIndex, err := GenerateTemplate(templates.IndexTemplate, indexData)
 	if err != nil {
 		fmt.Println(err)
@@ -43,7 +45,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	rawApp502, err := GenerateTemplate(templates.App502Template, nil)
+	rawApp502, err := GenerateTemplate(templates.App502Template, app502Data)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -57,23 +59,50 @@ func main() {
 }
 
 func Initialize() error {
+	httpPort := 8090
+	httpsPort := 4443
+	AppPort := 5442
 	version := os.Getenv("VERSION")
 	if version == "" {
 		return fmt.Errorf("VERSION is not set")
 	}
 
-	localDomain := os.Getenv("LOCAL_DOMAIN")
-	if localDomain == "" {
-		return fmt.Errorf("LOCAL_DOMAIN is not set")
-	}
-
 	rawUseTLS := os.Getenv("USE_TLS")
 	if rawUseTLS == "" {
-		return fmt.Errorf("USE_TLS is not set")
+		rawUseTLS = "false"
 	}
 	useTLS, err := strconv.ParseBool(rawUseTLS)
 	if err != nil {
 		return fmt.Errorf("USE_TLS is not a boolean")
+	}
+
+	lanMode := os.Getenv("LAN_MODE")
+	if lanMode == "" {
+		lanMode = "false"
+	}
+
+	lanPrivateIP := os.Getenv("LAN_PRIVATE_IP")
+	if lanPrivateIP == "" {
+		return fmt.Errorf("LAN_PRIVATE_IP is not set")
+	}
+
+	lanDomain := os.Getenv("LAN_DOMAIN")
+	if lanDomain == "" {
+		lanDomain = "openvidu-local.dev"
+	}
+
+	if lanPrivateIP != "none" && lanDomain == "openvidu-local.dev" {
+		ipDashes := strings.ReplaceAll(lanPrivateIP, ".", "-")
+		lanDomain = fmt.Sprintf("%s.%s", ipDashes, lanDomain)
+	}
+
+	httpUrl := fmt.Sprintf("http://localhost:%d", httpPort)
+	httpsUrl := ""
+	if useTLS {
+		httpsUrl = fmt.Sprintf("https://localhost:%d", httpsPort)
+		if lanMode == "true" {
+			httpsUrl = fmt.Sprintf("https://%s:%d", lanDomain, httpsPort)
+		}
 	}
 
 	livekitApiKey := os.Getenv("LIVEKIT_API_KEY")
@@ -107,9 +136,9 @@ func Initialize() error {
 
 	indexData = &templates.IndexData{
 		OpenViduVersion:        version,
-		DomainName:             localDomain,
-		IsLocalhost:            localDomain == "localhost",
-		IsTLS:                  useTLS,
+		LanMode:                lanMode == "true",
+		HttpUrl:                httpUrl,
+		HttpsUrl:               httpsUrl,
 		LiveKitApiKey:          livekitApiKey,
 		LiveKitApiSecret:       livekitApiSecret,
 		OpenViduSecret:         openviduSecret,
@@ -120,9 +149,17 @@ func Initialize() error {
 	}
 
 	caddyData = &templates.CaddyData{
-		DomainName:  localDomain,
-		IsLocalhost: localDomain == "localhost",
-		IsTLS:       useTLS,
+		LanMode:   lanMode == "true",
+		LanDomain: lanDomain,
+		HttpUrl:   httpUrl,
+		HttpsUrl:  httpsUrl,
+		HttpPort:  strconv.Itoa(httpPort),
+		HttpsPort: strconv.Itoa(httpsPort),
+		AppPort:   strconv.Itoa(AppPort),
+	}
+
+	app502Data = &templates.App502Data{
+		AppPort: strconv.Itoa(AppPort),
 	}
 
 	return nil

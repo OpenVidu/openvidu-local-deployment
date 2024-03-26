@@ -61,21 +61,21 @@ if [ "$START" = "true" ]; then
         export $(grep -v '^#' .env | xargs)
     fi
 
-    if [ "$PRIVATE_IP" = "auto" ]; then
-        PRIVATE_IP="$(getPrivateIp)"
-        if [ -z "$PRIVATE_IP" ]; then
-            PRIVATE_IP=none
+    if [ "$LAN_PRIVATE_IP" = "auto" ]; then
+        LAN_PRIVATE_IP="$(getPrivateIp)"
+        if [ -z "$LAN_PRIVATE_IP" ]; then
+            LAN_PRIVATE_IP=none
         fi
-        export PRIVATE_IP
+        export LAN_PRIVATE_IP
     fi
 
     echo "Starting OpenVidu..."
     export RUN_WITH_SCRIPT=true
-    docker compose down
+    docker compose down --volumes
     docker compose up
 fi
 
 if [ "$STOP" = "true" ]; then
     echo "Stopping OpenVidu"
-    docker compose down
+    docker compose down --volumes
 fi

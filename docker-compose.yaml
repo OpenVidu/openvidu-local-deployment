@@ -92,6 +92,8 @@ services:
       - LAN_PRIVATE_IP=${LAN_PRIVATE_IP:-}
     ports:
       - "3478:3478/udp"
+      - "7881:7881/tcp"
+      - "7882-7892:7882-7892/udp"
     entrypoint: /bin/sh /scripts/entrypoint.sh
     command: --config /etc/livekit.yaml
     volumes:
@@ -108,7 +110,7 @@ services:
     ports:
       - "1935:1935"
       - "8085:8085"
-      - "7885:7885/udp"
+      - "7895:7895/udp"
     environment:
       - INGRESS_CONFIG_FILE=/etc/ingress.yaml
     volumes:
@@ -170,6 +172,13 @@ services:
       - LAN_DOMAIN=${LAN_DOMAIN:-}
       - LAN_MODE=${LAN_MODE:-false}
       - LAN_PRIVATE_IP=${LAN_PRIVATE_IP:-}
+      - OPENVIDU_SHIM_SECRET=${OPENVIDU_SHIM_SECRET:-}
+      - LIVEKIT_API_KEY=${LIVEKIT_API_KEY:-}
+      - LIVEKIT_API_SECRET=${LIVEKIT_API_SECRET:-}
+      - DASHBOARD_ADMIN_USERNAME=${DASHBOARD_ADMIN_USERNAME:-}
+      - DASHBOARD_ADMIN_PASSWORD=${DASHBOARD_ADMIN_PASSWORD:-}
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY:-}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY:-}
     depends_on:
       - openvidu
       - ingress

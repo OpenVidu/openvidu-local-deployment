@@ -78,8 +78,8 @@ const IndexTemplate = `
                 <li><strong>Minio Console: </strong><a href="{{ .HttpUrl }}/minio-console"
                         target="_blank">{{ .HttpUrl }}/minio-console</a></li>
                 {{- if not .HttpsUrl }}
-                <li><strong>OpenVidu Call: </strong><a href="http://localdomain.com:4443/openvidu-call"
-                        target="_blank">http://localdomain.com:4443/openvidu-call</a></li>
+                <li><strong>OpenVidu Call: </strong><a href="{{ .HttpUrl }}/openvidu-call"
+                        target="_blank">{{ .HttpUrl }}/openvidu-call</a></li>
                 {{- end }}
             </ul>
             <hr class="my-4">

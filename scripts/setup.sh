@@ -8,7 +8,7 @@ if [ "$RUN_WITH_SCRIPT" = 'false' ]; then
   echo ''
   echo '    - Linux: ./openvidu_linux.sh start'
   echo '    - MacOS: ./openvidu_macos.sh start'
-  echo '    - Windows: ./openvidu_windows.ps1'
+  echo '    - Windows: ./openvidu_windows.bat start'
   echo ''
   echo '------------------------'
   exit 1

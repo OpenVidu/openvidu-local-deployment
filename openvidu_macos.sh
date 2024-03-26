@@ -68,6 +68,8 @@ if [ "$START" = "true" ]; then
         fi
         export LAN_PRIVATE_IP
     fi
+    # MongoDB support on Apple Silicon
+    export EXPERIMENTAL_DOCKER_DESKTOP_FORCE_QEMU=1
 
     echo "Starting OpenVidu..."
     export RUN_WITH_SCRIPT=true

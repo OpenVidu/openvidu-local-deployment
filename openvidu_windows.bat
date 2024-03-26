@@ -2,7 +2,6 @@
 setlocal enabledelayedexpansion
 
 :: Function to show help
-call :showHelp || exit /b 1
 goto :main
 
 :showHelp

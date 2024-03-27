@@ -14,13 +14,14 @@ if [ -z "$LAN_PRIVATE_IP" ]; then
 fi
 
 # Replace the LAN_PRIVATE_IP in the .env file
-sed -i "s/LAN_PRIVATE_IP=.*/LAN_PRIVATE_IP=$LAN_PRIVATE_IP/g" .env
+sed -i'' -e "s/LAN_PRIVATE_IP=.*/LAN_PRIVATE_IP=$LAN_PRIVATE_IP/g" .env
 
 # If sillicon mac, enable EXPERIMENTAL_DOCKER_DESKTOP_FORCE_QEMU flag
 if [ "$(uname -m)" = "arm64" ]; then
     if ! grep -q "EXPERIMENTAL_DOCKER_DESKTOP_FORCE_QEMU" .env; then
         echo "# Enable this flag to run Docker Desktop on Apple Silicon Macs" >> .env
         echo "EXPERIMENTAL_DOCKER_DESKTOP_FORCE_QEMU=1" >> .env
+    else
+        sed -i'' -e "s/EXPERIMENTAL_DOCKER_DESKTOP_FORCE_QEMU=.*/EXPERIMENTAL_DOCKER_DESKTOP_FORCE_QEMU=1/g" .env
     fi
-    sed -i "s/EXPERIMENTAL_DOCKER_DESKTOP_FORCE_QEMU=.*/EXPERIMENTAL_DOCKER_DESKTOP_FORCE_QEMU=1/g" .env
 fi

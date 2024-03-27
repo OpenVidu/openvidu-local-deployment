@@ -16,7 +16,7 @@ On **Linux**:
 ```sh
 git clone https://github.com/OpenVidu/openvidu-local-deployment
 cd openvidu-local-deployment
-.\configure_lan_private_ip_windows.ps1
+.\configure_lan_private_ip_windows.bat
 ```
 
 ### Mac

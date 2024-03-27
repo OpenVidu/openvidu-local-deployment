@@ -10,14 +10,18 @@ if "%ip%"=="" (
 setlocal enabledelayedexpansion
 set "tempFile=%temp%\temp_env_%random%.txt"
 if exist "%tempFile%" del "%tempFile%"
-for /f "tokens=*" %%a in (.env) do (
-    set "line=%%a"
-    if "!line:~0,14!"=="LAN_PRIVATE_IP=" (
-        echo LAN_PRIVATE_IP=%ip%>>"%tempFile%"
-    ) else (
-        echo !line!>>"%tempFile%"
+(
+    for /f "delims=" %%i in ('findstr /n "^" ".env"') do (
+        set "line=%%i"
+        set "line=!line:*:=!"
+        if "!line:~0,15!"=="LAN_PRIVATE_IP=" (
+            echo LAN_PRIVATE_IP=%ip%
+        ) else (
+            echo(!line!
+        )
     )
-)
+) > "%tempFile%"
+
 move /y "%tempFile%" ".env" >nul
 endlocal
 exit /b 0

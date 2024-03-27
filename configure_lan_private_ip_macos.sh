@@ -1,7 +1,8 @@
 #!/bin/sh
 
 getPrivateIp() {
-    ip=$(ipconfig getifaddr $(route -n get default | grep interface | awk '{print $2}'))
+    interface=$(route -n get default | grep interface | awk '{print $2}')
+    ip=$(ipconfig getifaddr "$interface")
     echo "$ip"
 }
 

@@ -73,19 +73,19 @@ const IndexTemplate = `<!DOCTYPE html>
                     <li>API Secret: <code>{{.LiveKitApiSecret}}</code></li>
                 </ul>
             </li>
-            <li>Minio: <a href="{{.HttpUrl}}/minio-console" target="_blank">{{.HttpUrl}}/minio-console</a>
+            <li><a href="/minio-console" target="_blank">MinIO</a>
                 <ul>
                     <li>Username: <code>{{.MinioAdminKey}}</code></li>
                     <li>Password: <code>{{.MinioAdminSecret}}</code></li>
                 </ul>
             </li>
-            <li>OpenVidu Dashboard: <a href="{{.HttpUrl}}/dashboard" target="_blank">{{.HttpUrl}}/dashboard</a>
+            <li><a href="/dashboard" target="_blank">OpenVidu Dashboard</a>
                 <ul>
                     <li>Username: <code>{{.DashboardAdminUsername}}</code></li>
                     <li>Password: <code>{{.DashboardAdminPassword}}</code></li>
                 </ul>
             </li>
-            <li>OpenVidu Call: <a href="{{.HttpUrl}}/openvidu-call" target="_blank">{{.HttpUrl}}/openvidu-call</a></li>
+            <li><a href="/openvidu-call" target="_blank">OpenVidu Call</a></li>
         </ul>
     </div>
 </body>

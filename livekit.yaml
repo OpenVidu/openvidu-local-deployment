@@ -25,11 +25,11 @@ turn:
     relay_range_start: 40000
     relay_range_end: 50000
 keys:
-    key1: abcdefghijklmnopqrstuvwxyz123456
+    devkey: secret
 webhook:
-    api_key: key1
+    api_key: devkey
     urls:
-        - http://openvidu-v2compatibility:4443/openvidu/api/webhook
+        - http://openvidu-v2compatibility:5080/livekit
 ingress:
     rtmp_base_url: rtmp://localhost:1935/rtmp
     whip_base_url: http://localhost:8085/whip

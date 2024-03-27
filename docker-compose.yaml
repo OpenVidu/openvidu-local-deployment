@@ -10,7 +10,7 @@ services:
       - LAN_DOMAIN=${LAN_DOMAIN:-}
       - LAN_PRIVATE_IP=${LAN_PRIVATE_IP:-}
       - LAN_MODE=${LAN_MODE:-false}
-      - USE_TLS=${USE_TLS:-false}
+      - USE_HTTPS=${USE_HTTPS:-false}
       - LIVEKIT_API_KEY=${LIVEKIT_API_KEY:-}
       - LIVEKIT_API_SECRET=${LIVEKIT_API_SECRET:-}
       - DASHBOARD_ADMIN_USERNAME=${DASHBOARD_ADMIN_USERNAME:-}
@@ -19,8 +19,10 @@ services:
       - MINIO_SECRET_KEY=${MINIO_SECRET_KEY:-}
       - OPENVIDU_SHIM_SECRET=${OPENVIDU_SHIM_SECRET:-}
     ports:
-      - 4443:4443
-      - 8090:8090
+      - 5443:5443
+      - 6443:6443
+      - 7443:7443
+      - 7880:7880
     depends_on:
       setup:
         condition: service_completed_successfully
@@ -43,14 +45,12 @@ services:
     image: bitnami/minio:2024.3.15-debian-12-r0
     container_name: minio
     restart: unless-stopped
-    ports:
-      - 9000:9000
     environment:
       - MINIO_ROOT_USER=${MINIO_ACCESS_KEY:-}
       - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY:-}
       - MINIO_DEFAULT_BUCKETS=openvidu
       - MINIO_CONSOLE_SUBPATH=/minio-console
-      - MINIO_BROWSER_REDIRECT_URL=http://localhost:4443/minio-console/
+      - MINIO_BROWSER_REDIRECT_URL=http://localhost:7880/minio-console/
     volumes:
       - ./minio/data:/bitnami/minio/data
       - minio-certs:/certs
@@ -139,11 +139,11 @@ services:
     container_name: openvidu-v2compatibility
     entrypoint: /bin/sh /scripts/entrypoint.sh
     environment:
-      - USE_TLS=${USE_TLS:-false}
+      - USE_HTTPS=${USE_HTTPS:-false}
       - LAN_DOMAIN=${LAN_DOMAIN:-}
       - LAN_MODE=${LAN_MODE:-false}
       - LAN_PRIVATE_IP=${LAN_PRIVATE_IP:-}
-      - SERVER_PORT=4443
+      - SERVER_PORT=5080
       - OPENVIDU_SHIM_SECRET=${OPENVIDU_SHIM_SECRET:-}
       - LIVEKIT_URL_PRIVATE=ws://openvidu:7880
       - LIVEKIT_API_KEY=${LIVEKIT_API_KEY:-}
@@ -169,7 +169,7 @@ services:
     container_name: ready-check
     restart: on-failure
     environment:
-      - USE_TLS=${USE_TLS:-false}
+      - USE_HTTPS=${USE_HTTPS:-false}
       - LAN_DOMAIN=${LAN_DOMAIN:-}
       - LAN_MODE=${LAN_MODE:-false}
       - LAN_PRIVATE_IP=${LAN_PRIVATE_IP:-}
@@ -202,7 +202,7 @@ services:
       - ./egress:/egress
       - ./scripts/setup.sh:/scripts/setup.sh
     environment:
-      - USE_TLS=${USE_TLS:-false}
+      - USE_HTTPS=${USE_HTTPS:-false}
       - LAN_MODE=${LAN_MODE:-false}
       - LAN_PRIVATE_IP=${LAN_PRIVATE_IP:-}
       - RUN_WITH_SCRIPT=${RUN_WITH_SCRIPT:-false}

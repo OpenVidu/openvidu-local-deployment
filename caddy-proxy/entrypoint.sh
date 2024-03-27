@@ -11,9 +11,13 @@ if [ ! -f /var/www/index.html ]; then
   mkdir -p /var/www
   cp "$TMP_DIR/index.html" /var/www/index.html
 fi
-if [ ! -f /var/www/app502.html ]; then
+if [ ! -f /var/www/app502client.html ]; then
   mkdir -p /var/www
-  cp "$TMP_DIR/app502.html" /var/www/app502.html
+  cp "$TMP_DIR/app502client.html" /var/www/app502client.html
+fi
+if [ ! -f /var/www/app502server.html ]; then
+  mkdir -p /var/www
+  cp "$TMP_DIR/app502server.html" /var/www/app502server.html
 fi
 if [ ! -f /config/caddy/Caddyfile ]; then
   mkdir -p /config/caddy

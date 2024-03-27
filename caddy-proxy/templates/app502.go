@@ -1,7 +1,8 @@
 package templates
 
 type App502Data struct {
-	AppPort string
+	Title   string
+	Message string
 }
 
 const App502Template = `<!DOCTYPE html>
@@ -37,14 +38,12 @@ const App502Template = `<!DOCTYPE html>
     <div class="container">
         <div>
             <div class="error-code">502 - Bad Gateway</div>
-            <h1 class="display-5">OpenVidu Application Not Found</h1>
+            <h1 class="display-5">{{.Title}}</h1>
 			<hr class="my-4">
-            <p>If you are developing an application and <b>run it locally at port {{.AppPort}}</b>, you will see here your application, under
-                the same domain and TLS certificate as OpenVidu.</p>
+            <p>{{ .Message }}</p>
         </div>
     </div>
-    <!-- Bootstrap Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-rwoI1CjyWz1p9q6Lwz3m6ZXjCp3S1/9pSNOWq37fRynwCEK9kwu1F9Mbc+JwDMTV" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
 `

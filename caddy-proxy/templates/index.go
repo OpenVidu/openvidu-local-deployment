@@ -5,6 +5,8 @@ type IndexData struct {
 	LanMode                bool
 	HttpUrl                string
 	HttpsUrl               string
+	WsUrl                  string
+	WssUrl                 string
 	DashboardAdminUsername string
 	DashboardAdminPassword string
 	MinioAdminKey          string
@@ -14,9 +16,9 @@ type IndexData struct {
 	OpenViduSecret         string
 }
 
-const IndexTemplate = `
-<!DOCTYPE html>
+const IndexTemplate = `<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -35,83 +37,58 @@ const IndexTemplate = `
 
 <body>
     <div class="container">
-        <div>
-            <h1 class="display-4">Welcome to OpenVidu Local Deployment</h1>
-            <p class="lead">OpenVidu Version: <strong>{{ .OpenViduVersion }}</strong></p>
-            <div class="alert alert-warning" role="alert">
-                <span>This deployment is only for development purposes.</span>
-            </div>
-            <hr class="my-4">
-            {{- if .HttpsUrl }}
-
-            <h2>HTTPS URLs</h2>
-            {{- if .LanMode }}
-            <div class="alert alert-info" role="alert">
-                <span>You can access from any device in your local network using the following URLs:</span>
-            </div>
-            {{- end}}
-            <ul>
-                <li><strong>OpenVidu and Livekit API: </strong><a href="{{ .HttpsUrl }}"
-                        target="_blank">{{ .HttpsUrl }}</a></li>
-                <li><strong>OpenVidu Dashboard: </strong><a href="{{ .HttpsUrl }}/dashboard"
-                        target="_blank">{{ .HttpsUrl }}/dashboard</a></li>
-                <li><strong>Minio Console: </strong><a href="{{ .HttpsUrl }}/minio-console"
-                        target="_blank">{{ .HttpsUrl }}/minio-console</a></li>
-                <li><strong>OpenVidu Call: </strong><a href="{{ .HttpsUrl }}/openvidu-call"
-                        target="_blank">{{ .HttpsUrl }}/openvidu-call</a></li>
-                <li><strong>Your App: </strong><span>Any App you deploy at port 5442 will be available here: </span>
-                    <ul>
-                        <li><a href="{{ .HttpsUrl }}"
-                                target="_blank">{{ .HttpsUrl }}</a></li>
-                    </ul>
-                </li>
-            </ul>
-            <hr class="my-4">
-
-            {{- end }}
-            <h2>HTTP URLs</h2>
-            <ul>
-                <li><strong>OpenVidu and Livekit API: </strong><a href="{{ .HttpUrl }}"
-                        target="_blank">{{ .HttpUrl }}</a></li>
-                <li><strong>OpenVidu Dashboard: </strong><a href="{{ .HttpUrl }}/dashboard"
-                        target="_blank">{{ .HttpUrl }}/dashboard</a></li>
-                <li><strong>Minio Console: </strong><a href="{{ .HttpUrl }}/minio-console"
-                        target="_blank">{{ .HttpUrl }}/minio-console</a></li>
-                {{- if not .HttpsUrl }}
-                <li><strong>OpenVidu Call: </strong><a href="{{ .HttpUrl }}/openvidu-call"
-                        target="_blank">{{ .HttpUrl }}/openvidu-call</a></li>
-                {{- end }}
-            </ul>
-            <hr class="my-4">
-            <!-- Section with Credentials -->
-            <h2>Credentials</h2>
-            <ul>
-                <li><strong>OpenVidu (Basic auth):</strong>
-                    <ul>
-                        <li>Username: <code>OPENVIDUAPP</code></li>
-                        <li>Password: <code>{{ .OpenViduSecret }}</code></li>
-                    </ul>
-                </li>
-                <li><strong>LiveKit API:</strong>
-                    <ul>
-                        <li>API Key: <code>{{ .LiveKitApiKey }}</code></li>
-                        <li>API Secret: <code>{{ .LiveKitApiSecret }}</code></li>
-                    </ul>
-                </li>
-                <li><strong>OpenVidu Dashboard: </strong>
-                    <ul>
-                        <li>Username: <code>{{ .DashboardAdminUsername }}</code></li>
-                        <li>Password: <code>{{ .DashboardAdminPassword }}</code></li>
-                    </ul>
-                </li>
-                <li><strong>Minio: </strong>
-                    <ul>
-                        <li>User: <code>{{ .MinioAdminKey }}</code></li>
-                        <li>Password: <code>{{ .MinioAdminSecret }}</code></li>
-                    </ul>
-                </li>
-            </ul>
+        <h1 class="display-4">Welcome to OpenVidu Local Deployment</h1>
+        <p class="lead">OpenVidu Version: <strong>{{.OpenViduVersion}}</strong></p>
+        <div class="alert alert-warning" role="alert">
+            <span>This deployment is only for development purposes.</span>
         </div>
+        <hr class="my-4">
+        <h2>OpenVidu Server and LiveKit Server API:</h2>
+        <ul>
+            <li>From this machine:
+                <ul>
+                    <li><a href="{{.HttpUrl}}" target="_blank">{{.HttpUrl}}</a></li>
+                    <li><a href="{{.WsUrl}}" target="_blank">{{.WsUrl}}</a></li>
+                </ul>
+            </li>
+            <li>From other devices in your LAN:
+                <ul>
+                    <li><a href="{{.HttpsUrl}}" target="_blank">{{.HttpsUrl}}</a></li>
+                    <li><a href="{{.WssUrl}}" target="_blank">{{.WssUrl}}</a></li>
+                </ul>
+            </li>
+        </ul>
+        <hr class="my-4">
+        <h2>Services and passwords:</h2>
+        <ul>
+            <li><b>OpenVidu API:</b>
+                <ul>
+                    <li>Username: <code>OPENVIDUAPP</code></li>
+                    <li>Password: <code>{{.OpenViduSecret}}</code></li>
+                </ul>
+            </li>
+            <li>LiveKit API:
+                <ul>
+                    <li>API Key: <code>{{.LiveKitApiKey}}</code></li>
+                    <li>API Secret: <code>{{.LiveKitApiSecret}}</code></li>
+                </ul>
+            </li>
+            <li>Minio: <a href="{{.HttpUrl}}/minio-console" target="_blank">{{.HttpUrl}}/minio-console</a>
+                <ul>
+                    <li>Username: <code>{{.MinioAdminKey}}</code></li>
+                    <li>Password: <code>{{.MinioAdminSecret}}</code></li>
+                </ul>
+            </li>
+            <li>OpenVidu Dashboard: <a href="{{.HttpUrl}}/dashboard" target="_blank">{{.HttpUrl}}/dashboard</a>
+                <ul>
+                    <li>Username: <code>{{.DashboardAdminUsername}}</code></li>
+                    <li>Password: <code>{{.DashboardAdminPassword}}</code></li>
+                </ul>
+            </li>
+            <li>OpenVidu Call: <a href="{{.HttpUrl}}/openvidu-call" target="_blank">{{.HttpUrl}}/openvidu-call</a></li>
+        </ul>
+    </div>
 </body>
+
 </html>
 `

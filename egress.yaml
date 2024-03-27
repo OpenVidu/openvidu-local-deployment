@@ -4,8 +4,8 @@ redis:
     password: redispassword
     db: 0
     use_tls: false
-api_key: key1
-api_secret: abcdefghijklmnopqrstuvwxyz123456
+api_key: devkey
+api_secret: secret
 ws_url: ws://openvidu:7880
 health_port: 9091
 

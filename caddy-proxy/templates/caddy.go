@@ -3,11 +3,20 @@ package templates
 type CaddyData struct {
 	LanMode   bool
 	LanDomain string
-	HttpUrl   string
-	HttpsUrl  string
+	// Main OpenVidu and LiveKit API ports
 	HttpPort  string
 	HttpsPort string
-	AppPort   string
+	// Main URLs for OpenVidu and LiveKit
+	HttpUrl  string
+	HttpsUrl string
+	// Tutorials ports
+	AppClientPort      string
+	AppServerPort      string
+	HttpsAppClientPort string
+	HttpsAppServerPort string
+	// Tutorial URLs
+	HttpsAppClientUrl string
+	HttpsAppServerUrl string
 }
 
 const CaddyfileTemplate = `
@@ -28,7 +37,7 @@ const CaddyfileTemplate = `
 	# OpenVidu v2 API
 	@openvidu_v2 path /openvidu/api/* /openvidu/ws/*
 	handle @openvidu_v2 {
-		reverse_proxy http://openvidu-v2compatibility:4443
+		reverse_proxy http://openvidu-v2compatibility:5080
 	}
 
 	# Minio console
@@ -53,15 +62,26 @@ const CaddyfileTemplate = `
 	}
 
 }
-(custom_app) {
+(application_client) {
 	handle_errors {
 		@502 expression {http.error.status_code} == 502
-		rewrite @502 /app502.html
+		rewrite @502 /app502client.html
 		file_server {
 			root /var/www
 		}
 	}
-	reverse_proxy http://host.docker.internal:{{ .AppPort }}
+	reverse_proxy http://host.docker.internal:{{ .AppClientPort }}
+}
+
+(application_server) {
+	handle_errors {
+		@502 expression {http.error.status_code} == 502
+		rewrite @502 /app502server.html
+		file_server {
+			root /var/www
+		}
+	}
+	reverse_proxy http://host.docker.internal:{{ .AppServerPort }}
 }
 
 # Servers
@@ -73,7 +93,8 @@ const CaddyfileTemplate = `
 {{- if .HttpsUrl }}
 
 {{- if .LanMode }}
-{{.HttpsUrl}} {
+
+{{ .HttpsUrl }} {
 	{{- if hasSuffix .LanDomain ".openvidu-local.dev" }}
 	tls internal {
 		get_certificate http https://certs.openvidu-local.dev/caddy.pem
@@ -82,14 +103,49 @@ const CaddyfileTemplate = `
 	tls internal
 	{{- end }}
 	import general_rules
-	import custom_app
+	import index
 }
+
+{{ .HttpsAppClientUrl }} {
+	{{- if hasSuffix .LanDomain ".openvidu-local.dev" }}
+	tls internal {
+		get_certificate http https://certs.openvidu-local.dev/caddy.pem
+	}
+	{{- else }}
+	tls internal
+	{{- end }}
+	import application_client
+}
+
+{{ .HttpsAppServerUrl }} {
+	{{- if hasSuffix .LanDomain ".openvidu-local.dev" }}
+	tls internal {
+		get_certificate http https://certs.openvidu-local.dev/caddy.pem
+	}
+	{{- else }}
+	tls internal
+	{{- end }}
+	import application_server
+}
+
 {{- else }}
+
 https://*:{{.HttpsPort}} {
 	tls internal
 	import general_rules
-	import custom_app
+	import index
 }
+
+https://*:{{.HttpsAppClientPort}} {
+	tls internal
+	import application_client
+}
+
+https://*:{{.HttpsAppServerPort}} {
+	tls internal
+	import application_server
+}
+
 {{- end }}
 
 {{- end}}

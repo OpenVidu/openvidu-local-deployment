@@ -4,7 +4,7 @@ services:
     container_name: openvidu-call
     restart: on-failure
     environment:
-      - USE_TLS=${USE_TLS:-false}
+      - USE_HTTPS=${USE_HTTPS:-false}
       - LAN_MODE=${LAN_MODE:-false}
       - LAN_DOMAIN=${LAN_DOMAIN:-}
       - LAN_PRIVATE_IP=${LAN_PRIVATE_IP:-}

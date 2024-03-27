@@ -1,27 +1,23 @@
 #!/bin/sh
 
-if [ "$RUN_WITH_SCRIPT" = 'false' ]; then
+if [ -z "$LAN_PRIVATE_IP" ]; then
   echo '------------------------'
   echo ''
-  echo 'Do not run this docker-compose file via "docker compose up" directly.'
-  echo 'Please run it via the provided scripts.'
+  echo 'LAN_PRIVATE_IP is required in .env file'
+  echo 'Depending on your OS, you can run the following command to get your LAN private IP:'
   echo ''
-  echo '    - Linux: ./openvidu_linux.sh start'
-  echo '    - MacOS: ./openvidu_macos.sh start'
-  echo '    - Windows: ./openvidu_windows.bat start'
+  echo '    - Linux: ./configure_lan_private_ip_linux.sh'
+  echo '    - MacOS: ./configure_lan_private_ip_macos.sh'
+  echo '    - Windows: .\configure_lan_private_ip_windows.bat'
   echo ''
+  echo 'The script will automatically update the .env file with the LAN_PRIVATE_IP'
+  echo 'If it can'\''t be found, you can manually set it in the .env file'
   echo '------------------------'
   exit 1
 fi
 
-if [ -z "$LAN_PRIVATE_IP" ]; then
-  echo 'LAN_PRIVATE_IP is required'
-  echo 'Valid values are: "none", "auto" or a valid IP address'
-  echo 'Define it in the .env file'
-  exit 1
-fi
-if [ "$LAN_MODE" = 'true' ] && [ "$USE_TLS" = 'false' ]; then
-  echo 'LAN_MODE cannot be "true" if USE_TLS is "false"'
+if [ "$LAN_MODE" = 'true' ] && [ "$USE_HTTPS" = 'false' ]; then
+  echo 'LAN_MODE cannot be "true" if USE_HTTPS is "false"'
   exit 1
 fi
 

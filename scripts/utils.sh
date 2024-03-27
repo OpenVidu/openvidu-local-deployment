@@ -1,9 +1,10 @@
 #!/bin/sh
 
 getDeploymentUrl() {
-    URL="http://localhost:8090"
-    if [ "${USE_TLS}" = 'true' ]; then
-        URL="https://localhost:4443"
+    schema="${1:-http}"
+    URL="$schema://localhost:7880"
+    if [ "${USE_HTTPS}" = 'true' ]; then
+        URL="${schema}s://localhost:7443"
     fi
     if [ "${LAN_MODE}" = 'true' ]; then
         LAN_DOMAIN=${LAN_DOMAIN:-"openvidu-local.dev"}
@@ -11,7 +12,7 @@ getDeploymentUrl() {
             # Replace dots with dashes
             LAN_DOMAIN="$(echo "$LAN_PRIVATE_IP" | sed 's/\./-/g').openvidu-local.dev"
         fi
-        URL="https://${LAN_DOMAIN}:4443"
+        URL="${schema}s://${LAN_DOMAIN}:7443"
     fi
     echo "$URL"
 }

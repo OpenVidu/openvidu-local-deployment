@@ -5,7 +5,7 @@ services:
     container_name: caddy-proxy
     restart: unless-stopped
     extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - host.docker.internal:host-gateway
     environment:
       - LAN_DOMAIN=${LAN_DOMAIN:-}
       - LAN_PRIVATE_IP=${LAN_PRIVATE_IP:-}
@@ -50,9 +50,9 @@ services:
       - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY:-}
       - MINIO_DEFAULT_BUCKETS=openvidu
       - MINIO_CONSOLE_SUBPATH=/minio-console
-      - MINIO_BROWSER_REDIRECT_URL=http://localhost:7880/minio-console/
+      - MINIO_BROWSER_REDIRECT_URL=http://localhost:7880/minio-console
     volumes:
-      - ./minio/data:/bitnami/minio/data
+      - minio-data:/bitnami/minio/data
       - minio-certs:/certs
     depends_on:
       setup:
@@ -63,7 +63,7 @@ services:
     container_name: mongo
     restart: unless-stopped
     volumes:
-      - ./mongo/data:/bitnami/mongodb/
+      - mongo-data:/bitnami/mongodb
     environment:
       - MONGODB_ROOT_USER=${MONGO_ADMIN_USERNAME:-}
       - MONGODB_ROOT_PASSWORD=${MONGO_ADMIN_PASSWORD:-}
@@ -92,9 +92,9 @@ services:
     environment:
       - LAN_PRIVATE_IP=${LAN_PRIVATE_IP:-}
     ports:
-      - "3478:3478/udp"
-      - "7881:7881/tcp"
-      - "7882-7892:7882-7892/udp"
+      - 3478:3478/udp
+      - 7881:7881/tcp
+      - 7882-7892:7882-7892/udp
     entrypoint: /bin/sh /scripts/entrypoint.sh
     command: --config /etc/livekit.yaml
     volumes:
@@ -109,9 +109,9 @@ services:
     container_name: ingress
     restart: unless-stopped
     ports:
-      - "1935:1935"
-      - "8085:8085"
-      - "7895:7895/udp"
+      - 1935:1935
+      - 8085:8085
+      - 7895:7895/udp
     environment:
       - INGRESS_CONFIG_FILE=/etc/ingress.yaml
     volumes:
@@ -128,7 +128,7 @@ services:
       - EGRESS_CONFIG_FILE=/etc/egress.yaml
     volumes:
       - ./egress.yaml:/etc/egress.yaml
-      - ./egress/home/egress:/home/egress/
+      - egress-data:/home/egress
     depends_on:
       setup:
         condition: service_completed_successfully
@@ -213,3 +213,6 @@ volumes:
   minio-certs:
   mongodb-config:
   redis:
+  minio-data:
+  mongo-data:
+  egress-data:

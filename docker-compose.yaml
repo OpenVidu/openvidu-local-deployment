@@ -197,9 +197,9 @@ services:
     container_name: setup
     restart: no
     volumes:
-      - ./minio:/minio
-      - ./mongo:/mongo
-      - ./egress:/egress
+      - minio-data:/minio
+      - mongo-data:/mongo
+      - egress-data:/egress
       - ./scripts/setup.sh:/scripts/setup.sh
     environment:
       - USE_HTTPS=${USE_HTTPS:-false}

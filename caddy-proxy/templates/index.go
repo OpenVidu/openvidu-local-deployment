@@ -51,12 +51,18 @@ const IndexTemplate = `<!DOCTYPE html>
                     <li><a href="{{.WsUrl}}" target="_blank">{{.WsUrl}}</a></li>
                 </ul>
             </li>
-            <li>From other devices in your LAN:
-                <ul>
-                    <li><a href="{{.HttpsUrl}}" target="_blank">{{.HttpsUrl}}</a></li>
-                    <li><a href="{{.WssUrl}}" target="_blank">{{.WssUrl}}</a></li>
-                </ul>
-            </li>
+            {{- if .HttpsUrl }}
+                {{- if .LanMode }}
+                <li>From other devices in your LAN:
+                {{- else }}
+                <li>Using HTTPS:
+                {{- end }}
+                    <ul>
+                        <li><a href="{{.HttpsUrl}}" target="_blank">{{.HttpsUrl}}</a></li>
+                        <li><a href="{{.WssUrl}}" target="_blank">{{.WssUrl}}</a></li>
+                    </ul>
+                </li>
+            {{- end }}
         </ul>
         <hr class="my-4">
         <h2>Services and passwords:</h2>

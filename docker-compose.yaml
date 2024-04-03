@@ -1,7 +1,7 @@
 services:
 
   caddy-proxy:
-    image: docker.io/wcm65pck/openvidu-caddy-local:main
+    image: docker.io/wcm65pck/openvidu-caddy-local:3.0.0-dev1
     container_name: caddy-proxy
     restart: unless-stopped
     extra_hosts:
@@ -73,7 +73,7 @@ services:
         condition: service_completed_successfully
 
   dashboard:
-    image: docker.io/wcm65pck/openvidu-dashboard:main
+    image: docker.io/wcm65pck/openvidu-dashboard:3.0.0-dev1
     container_name: dashboard
     restart: unless-stopped
     environment:
@@ -86,7 +86,7 @@ services:
         condition: service_completed_successfully
 
   openvidu:
-    image: docker.io/wcm65pck/openvidu-livekit:main
+    image: docker.io/wcm65pck/openvidu-livekit:3.0.0-dev1
     restart: unless-stopped
     container_name: openvidu
     environment:
@@ -134,7 +134,7 @@ services:
         condition: service_completed_successfully
 
   openvidu-v2compatibility:
-    image: docker.io/wcm65pck/openvidu-v2compatibility:main
+    image: docker.io/wcm65pck/openvidu-v2compatibility:3.0.0-dev1
     restart: unless-stopped
     container_name: openvidu-v2compatibility
     entrypoint: /bin/sh /scripts/entrypoint.sh

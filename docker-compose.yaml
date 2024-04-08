@@ -195,7 +195,7 @@ services:
   setup:
     image: busybox
     container_name: setup
-    restart: no
+    restart: "no"
     volumes:
       - minio-data:/minio
       - mongo-data:/mongo

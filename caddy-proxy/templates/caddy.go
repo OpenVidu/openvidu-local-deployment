@@ -44,7 +44,7 @@ const CaddyfileTemplate = `
 	redir /openvidu/layouts /openvidu/layouts/
 	handle_path /openvidu/layouts/* {
 		uri strip_prefix /openvidu/layouts
-		root * /var/www/custom-layouts
+		root * /var/www/custom-layout
 		file_server
 	}
 

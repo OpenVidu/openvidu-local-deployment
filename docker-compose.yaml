@@ -18,6 +18,8 @@ services:
       - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY:-}
       - MINIO_SECRET_KEY=${MINIO_SECRET_KEY:-}
       - OPENVIDU_SHIM_SECRET=${OPENVIDU_SHIM_SECRET:-}
+    volumes:
+      - ./custom-layouts:/var/www/custom-layouts
     ports:
       - 5443:5443
       - 6443:6443

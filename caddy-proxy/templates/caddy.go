@@ -40,6 +40,14 @@ const CaddyfileTemplate = `
 		reverse_proxy http://openvidu-v2compatibility:5080
 	}
 
+	# OpenVidu v2 Custom layout
+	redir /openvidu/layouts /openvidu/layouts/
+	handle_path /openvidu/layouts/* {
+		uri strip_prefix /openvidu/layouts
+		root * /var/www/custom-layouts
+		file_server
+	}
+
 	# Minio console
 	redir /minio-console /minio-console/
 	handle_path /minio-console/* {

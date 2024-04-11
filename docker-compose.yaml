@@ -134,6 +134,8 @@ services:
     image: livekit/egress:v1.8.2
     restart: unless-stopped
     container_name: egress
+    extra_hosts:
+      - host.docker.internal:host-gateway
     environment:
       - EGRESS_CONFIG_FILE=/etc/egress.yaml
     volumes:

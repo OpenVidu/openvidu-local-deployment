@@ -37,7 +37,7 @@ const CaddyfileTemplate = `
 	# OpenVidu v2 API
 	@openvidu_v2 path /openvidu/api/* /openvidu/ws/*
 	handle @openvidu_v2 {
-		reverse_proxy http://openvidu-v2compatibility:5080
+		reverse_proxy http://host.docker.internal:4443
 	}
 
 	# OpenVidu v2 Custom layout

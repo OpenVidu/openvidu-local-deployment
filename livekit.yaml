@@ -29,7 +29,7 @@ keys:
 webhook:
     api_key: devkey
     urls:
-        - http://openvidu-v2compatibility:5080/livekit
+        - http://host.docker.internal:4443/livekit
 ingress:
     rtmp_base_url: rtmp://localhost:1935/rtmp
     whip_base_url: http://localhost:8085/whip

@@ -150,12 +150,14 @@ services:
     restart: unless-stopped
     container_name: openvidu-v2compatibility
     entrypoint: /bin/sh /scripts/entrypoint.sh
+    ports:
+      - 4443:4443
     environment:
       - USE_HTTPS=${USE_HTTPS:-false}
       - LAN_DOMAIN=${LAN_DOMAIN:-}
       - LAN_MODE=${LAN_MODE:-false}
       - LAN_PRIVATE_IP=${LAN_PRIVATE_IP:-}
-      - SERVER_PORT=5080
+      - SERVER_PORT=4443
       - OPENVIDU_SHIM_SECRET=${OPENVIDU_SHIM_SECRET:-}
       - LIVEKIT_URL_PRIVATE=ws://openvidu:7880
       - LIVEKIT_API_KEY=${LIVEKIT_API_KEY:-}

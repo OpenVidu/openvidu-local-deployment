@@ -221,7 +221,7 @@ services:
       - LAN_PRIVATE_IP=${LAN_PRIVATE_IP:-}
       - RUN_WITH_SCRIPT=${RUN_WITH_SCRIPT:-false}
     user: root
-    command: /bin/sh scripts/setup.sh
+    command: /bin/sh /scripts/setup.sh
 
 volumes:
   minio-certs:

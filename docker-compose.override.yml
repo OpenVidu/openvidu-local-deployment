@@ -1,6 +1,6 @@
 services:
   default-app:
-    image: docker.io/wcm65pck/openvidu-call-demo:3.0.0-dev1
+    image: docker.io/wcm65pck/openvidu-call-demo:main
     container_name: openvidu-call
     restart: on-failure
     environment:

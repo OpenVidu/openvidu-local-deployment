@@ -1,0 +1,234 @@
+services:
+
+  caddy-proxy:
+    image: docker.io/wcm65pck/openvidu-caddy-local:main
+    container_name: caddy-proxy
+    restart: unless-stopped
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    environment:
+      - LAN_DOMAIN=${LAN_DOMAIN:-}
+      - LAN_PRIVATE_IP=${LAN_PRIVATE_IP:-}
+      - LAN_MODE=${LAN_MODE:-false}
+      - USE_HTTPS=${USE_HTTPS:-false}
+      - LIVEKIT_API_KEY=${LIVEKIT_API_KEY:-}
+      - LIVEKIT_API_SECRET=${LIVEKIT_API_SECRET:-}
+      - DASHBOARD_ADMIN_USERNAME=${DASHBOARD_ADMIN_USERNAME:-}
+      - DASHBOARD_ADMIN_PASSWORD=${DASHBOARD_ADMIN_PASSWORD:-}
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY:-}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY:-}
+      - OPENVIDU_SHIM_SECRET=${OPENVIDU_SHIM_SECRET:-}
+    volumes:
+      - ./custom-layout:/var/www/custom-layout
+    ports:
+      - 5443:5443
+      - 6443:6443
+      - 7443:7443
+      - 7880:7880
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+
+  redis:
+    image: redis:7.2.4-alpine
+    container_name: redis
+    restart: unless-stopped
+    ports:
+      - 6379:6379
+    volumes:
+      - redis:/data
+    command: >
+      redis-server
+      --bind 0.0.0.0
+      --requirepass ${REDIS_PASSWORD:-}
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+
+  minio:
+    image: bitnami/minio:2024.3.15-debian-12-r0
+    container_name: minio
+    restart: unless-stopped
+    ports:
+      - 9000:9000
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ACCESS_KEY:-}
+      - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY:-}
+      - MINIO_DEFAULT_BUCKETS=openvidu
+      - MINIO_CONSOLE_SUBPATH=/minio-console
+      - MINIO_BROWSER_REDIRECT_URL=http://localhost:7880/minio-console
+    volumes:
+      - minio-data:/bitnami/minio/data
+      - minio-certs:/certs
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+
+  mongo:
+    image: bitnami/mongodb:7.0.6-debian-12-r0
+    container_name: mongo
+    restart: unless-stopped
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo-data:/bitnami/mongodb
+    environment:
+      - MONGODB_ROOT_USER=${MONGO_ADMIN_USERNAME:-}
+      - MONGODB_ROOT_PASSWORD=${MONGO_ADMIN_PASSWORD:-}
+      - EXPERIMENTAL_DOCKER_DESKTOP_FORCE_QEMU=${EXPERIMENTAL_DOCKER_DESKTOP_FORCE_QEMU:-0}
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+
+  dashboard:
+    image: docker.io/wcm65pck/openvidu-dashboard:main
+    container_name: dashboard
+    restart: unless-stopped
+    environment:
+      - SERVER_PORT=5000
+      - ADMIN_USERNAME=${DASHBOARD_ADMIN_USERNAME:-}
+      - ADMIN_PASSWORD=${DASHBOARD_ADMIN_PASSWORD:-}
+      - DATABASE_URL=mongodb://mongoadmin:mongoadmin@mongo:27017
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+
+  openvidu:
+    image: docker.io/wcm65pck/openvidu-pro-livekit:main
+    restart: unless-stopped
+    container_name: openvidu
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    environment:
+      - LAN_PRIVATE_IP=${LAN_PRIVATE_IP:-}
+      - OPENVIDU_DEPLOYMENT_TYPE=local
+      - OPENVIDU_ENVIRONMENT=on_premise
+    ports:
+      - 3478:3478/udp
+      - 7881:7881/tcp
+      - 7882-7892:7882-7892/udp
+    entrypoint: /bin/sh /scripts/entrypoint.sh
+    command: --config /etc/livekit.yaml
+    volumes:
+      - ./livekit.yaml:/tmp/livekit.yaml
+      - ./scripts/entrypoint_openvidu.sh:/scripts/entrypoint.sh
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+
+  ingress:
+    image: livekit/ingress:v1.2.0
+    container_name: ingress
+    restart: unless-stopped
+    ports:
+      - 1935:1935
+      - 8085:8085
+      - 7895:7895/udp
+    environment:
+      - INGRESS_CONFIG_FILE=/etc/ingress.yaml
+    volumes:
+      - ./ingress.yaml:/etc/ingress.yaml
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+
+  egress:
+    image: livekit/egress:v1.8.2
+    restart: unless-stopped
+    container_name: egress
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    environment:
+      - EGRESS_CONFIG_FILE=/etc/egress.yaml
+    volumes:
+      - ./egress.yaml:/etc/egress.yaml
+      - egress-data:/home/egress
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+
+  openvidu-v2compatibility:
+    image: docker.io/wcm65pck/openvidu-v2compatibility:main
+    restart: unless-stopped
+    container_name: openvidu-v2compatibility
+    entrypoint: /bin/sh /scripts/entrypoint.sh
+    ports:
+      - 4443:4443
+    environment:
+      - USE_HTTPS=${USE_HTTPS:-false}
+      - LAN_DOMAIN=${LAN_DOMAIN:-}
+      - LAN_MODE=${LAN_MODE:-false}
+      - LAN_PRIVATE_IP=${LAN_PRIVATE_IP:-}
+      - SERVER_PORT=4443
+      - OPENVIDU_SHIM_SECRET=${OPENVIDU_SHIM_SECRET:-}
+      - LIVEKIT_URL_PRIVATE=ws://openvidu:7880
+      - LIVEKIT_API_KEY=${LIVEKIT_API_KEY:-}
+      - LIVEKIT_API_SECRET=${LIVEKIT_API_SECRET:-}
+      - OPENVIDU_PRO_AWS_S3_BUCKET=openvidu
+      - OPENVIDU_PRO_AWS_S3_SERVICE_ENDPOINT=http://minio:9000
+      - OPENVIDU_PRO_AWS_S3_ACCESS_KEY=${MINIO_ACCESS_KEY:-}
+      - OPENVIDU_PRO_AWS_S3_SECRET_KEY=${MINIO_SECRET_KEY:-}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+      - REDIS_DB=0
+      - OPENVIDU_WEBHOOK=false
+    volumes:
+      - ./scripts/entrypoint_v2comp.sh:/scripts/entrypoint.sh
+      - ./scripts/utils.sh:/scripts/utils.sh
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+
+  ready-check:
+    image: curlimages/curl:8.6.0
+    container_name: ready-check
+    restart: on-failure
+    environment:
+      - USE_HTTPS=${USE_HTTPS:-false}
+      - LAN_DOMAIN=${LAN_DOMAIN:-}
+      - LAN_MODE=${LAN_MODE:-false}
+      - LAN_PRIVATE_IP=${LAN_PRIVATE_IP:-}
+      - OPENVIDU_SHIM_SECRET=${OPENVIDU_SHIM_SECRET:-}
+      - LIVEKIT_API_KEY=${LIVEKIT_API_KEY:-}
+      - LIVEKIT_API_SECRET=${LIVEKIT_API_SECRET:-}
+      - DASHBOARD_ADMIN_USERNAME=${DASHBOARD_ADMIN_USERNAME:-}
+      - DASHBOARD_ADMIN_PASSWORD=${DASHBOARD_ADMIN_PASSWORD:-}
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY:-}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY:-}
+    depends_on:
+      - openvidu
+      - ingress
+      - egress
+      - dashboard
+      - minio
+      - mongo
+    volumes:
+      - ./scripts/ready-check.sh:/scripts/ready-check.sh
+      - ./scripts/utils.sh:/scripts/utils.sh
+    command: /bin/sh /scripts/ready-check.sh
+
+  setup:
+    image: busybox
+    container_name: setup
+    restart: "no"
+    volumes:
+      - minio-data:/minio
+      - mongo-data:/mongo
+      - egress-data:/egress
+      - ./scripts/setup.sh:/scripts/setup.sh
+    environment:
+      - USE_HTTPS=${USE_HTTPS:-false}
+      - LAN_MODE=${LAN_MODE:-false}
+      - LAN_PRIVATE_IP=${LAN_PRIVATE_IP:-}
+      - RUN_WITH_SCRIPT=${RUN_WITH_SCRIPT:-false}
+    user: root
+    command: /bin/sh /scripts/setup.sh
+
+volumes:
+  minio-certs:
+  mongodb-config:
+  redis:
+  minio-data:
+  mongo-data:
+  egress-data:

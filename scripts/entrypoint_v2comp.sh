@@ -5,4 +5,4 @@ set -e
 URL=$(getDeploymentUrl)
 export OPENVIDU_SHIM_URL="${URL}"
 export LIVEKIT_URL="${URL}"
-node dist/server.js
+/bin/server

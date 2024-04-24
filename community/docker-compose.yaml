@@ -1,5 +1,4 @@
 services:
-
   caddy-proxy:
     image: docker.io/wcm65pck/openvidu-caddy-local:main
     container_name: caddy-proxy
@@ -141,6 +140,32 @@ services:
     volumes:
       - ./egress.yaml:/etc/egress.yaml
       - egress-data:/home/egress
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+
+  default-app:
+    image: docker.io/wcm65pck/openvidu-call-demo:main
+    container_name: openvidu-call
+    restart: on-failure
+    environment:
+      - USE_HTTPS=${USE_HTTPS:-false}
+      - LAN_MODE=${LAN_MODE:-false}
+      - LAN_DOMAIN=${LAN_DOMAIN:-}
+      - LAN_PRIVATE_IP=${LAN_PRIVATE_IP:-}
+      - SERVER_PORT=5442
+      - LIVEKIT_URL_PRIVATE=ws://openvidu:7880/
+      - LIVEKIT_API_KEY=${LIVEKIT_API_KEY}
+      - LIVEKIT_API_SECRET=${LIVEKIT_API_SECRET}
+      - CALL_PRIVATE_ACCESS=DISABLED
+      - CALL_USER=${CALL_USER:-}
+      - CALL_SECRET=${CALL_SECRET:-}
+      - CALL_ADMIN_SECRET=${CALL_ADMIN_SECRET:-}
+      - CALL_RECORDING=${CALL_RECORDING:-}
+    volumes:
+      - ./scripts/entrypoint_default_app.sh:/scripts/entrypoint.sh
+      - ./scripts/utils.sh:/scripts/utils.sh
+    entrypoint: /bin/sh /scripts/entrypoint.sh
     depends_on:
       setup:
         condition: service_completed_successfully

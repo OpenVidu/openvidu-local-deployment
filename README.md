@@ -47,7 +47,10 @@ docker compose up
 
 ---
 
-## OpenVidu PRO
+## OpenVidu PRO (Evalutaion Mode)
+
+> OpenVidu PRO can be executed locally in evaluation mode for free for development and testing purposes.
+> Some limits apply: maximum 2 concurrent Rooms, 8 Participants per Room, 5 minutes duration per Room.
 
 ### Install OpenVidu PRO
 

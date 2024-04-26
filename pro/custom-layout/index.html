@@ -1,11 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recording custom layout</title>
-</head>
-<body>
-    Create here your custom layout
-</body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>OpenVidu Layout</title>
+
+		<script src="openvidu-browser-3.0.0-dev2.min.js"></script>
+		<script src="opentok-layout.min.js"></script>
+		<style>
+			body {
+				background-color: black;
+				margin: 0;
+				padding: 0;
+			}
+			#layout {
+				height: 100vh;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="layout"></div>
+	</body>
+
+	<script defer>
+		var layoutContainer = document.getElementById('layout');
+		// Initialize the layout container and get a reference to the layout method
+		var layout = initLayoutContainer(layoutContainer);
+		layout.layout();
+
+		var resizeTimeout;
+		window.onresize = function () {
+			clearTimeout(resizeTimeout);
+			resizeTimeout = setTimeout(() => layout.layout(), 20);
+		};
+
+		var url = new URL(window.location.href);
+		var SESSION_ID = url.searchParams.get('sessionId');
+		var SECRET = url.searchParams.get('secret');
+		// WARNING! Use "ws://" as protocol instead of "wss://" if you are using
+		// the OpenVidu dev container (openvidu/openvidu-dev) through localhost
+		var TOKEN =
+			'wss://localhost:4443' +
+			'?sessionId=' +
+			SESSION_ID +
+			'&secret=' +
+			SECRET +
+			'&recorder=true';
+
+		var OV = new OpenVidu();
+		var session = OV.initSession();
+
+		session.on('streamCreated', (event) => {
+			session.subscribe(event.stream, 'layout');
+			layout.layout();
+		});
+		session.on('streamDestroyed', (event) => {
+			setTimeout(() => layout.layout(), 20);
+		});
+		session
+			.connect(TOKEN)
+			.then(() => {
+				console.log('Recorder participant connected');
+				layout.layout();
+			})
+			.catch((error) => {
+				console.error(error);
+			});
+	</script>
 </html>

@@ -201,6 +201,7 @@ services:
       - V2COMPAT_REDIS_PASSWORD=${REDIS_PASSWORD:-}
       - V2COMPAT_REDIS_DB=0
       - V2COMPAT_OPENVIDU_WEBHOOK=false
+      - OPENVIDU_DEPLOYMENT_TYPE=local
     volumes:
       - ./recordings:/opt/openvidu/recordings
       - ./scripts/entrypoint_v2comp.sh:/scripts/entrypoint.sh

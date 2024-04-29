@@ -21,3 +21,16 @@ s3:
     endpoint: http://minio:9000
     bucket: openvidu
     force_path_style: true
+
+# CPU cost for each type of Egress operation
+# Default is setted for unlimited operations
+# Change these values according to your needs
+cpu_cost:
+    max_cpu_utilization: 0.99
+    room_composite_cpu_cost: 0.01
+    audio_room_composite_cpu_cost: 0.01
+    web_cpu_cost: 0.01
+    audio_web_cpu_cost: 0.01
+    participant_cpu_cost: 0.01
+    track_composite_cpu_cost: 0.01
+    track_cpu_cost: 0.01

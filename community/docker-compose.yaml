@@ -152,7 +152,7 @@ services:
       - LAN_MODE=${LAN_MODE:-false}
       - LAN_DOMAIN=${LAN_DOMAIN:-}
       - LAN_PRIVATE_IP=${LAN_PRIVATE_IP:-}
-      - SERVER_PORT=5442
+      - SERVER_PORT=6080
       - LIVEKIT_URL_PRIVATE=ws://openvidu:7880/
       - LIVEKIT_API_KEY=${LIVEKIT_API_KEY}
       - LIVEKIT_API_SECRET=${LIVEKIT_API_SECRET}

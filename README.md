@@ -1,5 +1,5 @@
 # OpenVidu Local Deployment
-Docker compose to run OpenVidu locally for development purposes
+Docker Compose files to run OpenVidu locally for development purposes.
 
 ## Requirements
 On **Windows** and **MacOS**:

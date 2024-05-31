@@ -30,7 +30,7 @@ webhook:
     api_key: devkey
     urls:
         - http://host.docker.internal:6080/webhook
-        - http://default-app:6080/call/api/webhook
+        - http://default-app:6080/livekit/webhook
 ingress:
     rtmp_base_url: rtmp://localhost:1935/rtmp
     whip_base_url: http://localhost:8085/whip

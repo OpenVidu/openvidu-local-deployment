@@ -5,6 +5,14 @@ openvidu:
         interval: 10s
         expiration: 768h # 32 days
         mongo_url: mongodb://mongoadmin:mongoadmin@mongo:27017
+    rtc:
+        # WebRTC engine selection
+        # Values: pion, mediasoup
+        engine: pion
+    mediasoup:
+        # Contents of the DEBUG environment variable passed to mediasoup.
+        # More info: https://www.npmjs.com/package/debug
+        debug: ""
 
 # LiveKit configuration
 port: 7880
@@ -31,7 +39,7 @@ webhook:
     urls:
         - http://host.docker.internal:4443/livekit/webhook # For OpenVidu 2 compatibility
         - http://host.docker.internal:6080/webhook
-        - http://default-app:6080/call/api/webhook
+        - http://default-app:6080/livekit/webhook
 ingress:
     rtmp_base_url: rtmp://localhost:1935/rtmp
     whip_base_url: http://localhost:8085/whip

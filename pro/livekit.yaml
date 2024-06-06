@@ -27,10 +27,10 @@ openvidu:
         # Comma-separated list of log tag names, for debugging.
         # More info: https://mediasoup.org/documentation/v3/mediasoup/debugging/
         # Values: info, ice, dtls, rtp, srtp, rtcp, rtx, bwe, score, simulcast, svc, sctp, message.
-        # Default: [] (empty).
-        log_tags: []
+        # Default: [info, ice, rtp, rtcp, message].
+        log_tags: [info, ice, rtp, rtcp, message]
 
- # LiveKit configuration
+# LiveKit configuration
 port: 7880
 bind_addresses:
     - ""

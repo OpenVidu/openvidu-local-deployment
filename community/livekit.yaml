@@ -36,9 +36,11 @@ ingress:
     whip_base_url: http://localhost:8085/whip
 logging:
     # Logging level for the LiveKit server.
-    # Values: "debug", "info" (default), "warn", "error".
+    # Values: debug, info, warn, error.
+    # Default: info.
     level: info
 
     # Logging level for the Pion WebRTC engine.
-    # Values: "trace", "debug", "info", "warn", "error" (default).
+    # Values: trace, debug, info, warn, error.
+    # Default: error.
     pion_level: error

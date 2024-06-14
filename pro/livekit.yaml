@@ -68,4 +68,4 @@ logging:
     # Logging level for the Pion WebRTC engine.
     # Values: trace, debug, info, warn, error.
     # Default: error.
-    pion_level: error
+    pion_level: warn

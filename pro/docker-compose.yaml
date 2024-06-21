@@ -147,7 +147,7 @@ services:
         condition: service_completed_successfully
 
   default-app:
-    image: docker.io/openvidu/openvidu-call-demo:main
+    image: docker.io/openvidu/openvidu-call:main-demo
     container_name: openvidu-call
     restart: on-failure
     environment:

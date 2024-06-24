@@ -1,6 +1,6 @@
 services:
   caddy-proxy:
-    image: docker.io/openvidu/openvidu-caddy-local:main
+    image: docker.io/openvidu/openvidu-caddy-local:3.0.0-dev4
     container_name: caddy-proxy
     restart: unless-stopped
     extra_hosts:
@@ -28,7 +28,7 @@ services:
         condition: service_completed_successfully
 
   redis:
-    image: redis:7.2.4-alpine
+    image: docker.io/redis:7.2.5-alpine
     container_name: redis
     restart: unless-stopped
     ports:
@@ -44,7 +44,7 @@ services:
         condition: service_completed_successfully
 
   minio:
-    image: bitnami/minio:2024.3.15-debian-12-r0
+    image: docker.io/bitnami/minio:2024.6.13
     container_name: minio
     restart: unless-stopped
     ports:
@@ -63,7 +63,7 @@ services:
         condition: service_completed_successfully
 
   mongo:
-    image: bitnami/mongodb:7.0.6-debian-12-r0
+    image: docker.io/bitnami/mongodb:7.0.11
     container_name: mongo
     restart: unless-stopped
     ports:
@@ -79,7 +79,7 @@ services:
         condition: service_completed_successfully
 
   dashboard:
-    image: docker.io/openvidu/openvidu-dashboard:main
+    image: docker.io/openvidu/openvidu-dashboard:3.0.0-dev4
     container_name: dashboard
     restart: unless-stopped
     environment:
@@ -92,7 +92,7 @@ services:
         condition: service_completed_successfully
 
   openvidu:
-    image: docker.io/openvidu/openvidu-server:main
+    image: docker.io/openvidu/openvidu-server:3.0.0-dev4
     restart: unless-stopped
     container_name: openvidu
     extra_hosts:
@@ -113,7 +113,7 @@ services:
         condition: service_completed_successfully
 
   ingress:
-    image: livekit/ingress:v1.2.0
+    image: docker.io/livekit/ingress:v1.2.0
     container_name: ingress
     restart: unless-stopped
     ports:
@@ -129,7 +129,7 @@ services:
         condition: service_completed_successfully
 
   egress:
-    image: livekit/egress:v1.8.2
+    image: docker.io/livekit/egress:v1.8.2
     restart: unless-stopped
     container_name: egress
     extra_hosts:
@@ -144,7 +144,7 @@ services:
         condition: service_completed_successfully
 
   default-app:
-    image: docker.io/openvidu/openvidu-call:main-demo
+    image: docker.io/openvidu/openvidu-call:3.0.0-dev4-demo
     container_name: openvidu-call
     restart: on-failure
     environment:
@@ -170,7 +170,7 @@ services:
         condition: service_completed_successfully
 
   ready-check:
-    image: curlimages/curl:8.6.0
+    image: docker.io/curlimages/curl:8.6.0
     container_name: ready-check
     restart: on-failure
     environment:
@@ -197,7 +197,7 @@ services:
     command: /bin/sh /scripts/ready-check.sh
 
   setup:
-    image: busybox
+    image: docker.io/busybox:1.36.1
     container_name: setup
     restart: "no"
     volumes:

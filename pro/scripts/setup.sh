@@ -14,6 +14,20 @@ if [ -z "$LAN_PRIVATE_IP" ]; then
   echo 'If it can'\''t be found, you can manually set it in the .env file'
   echo '------------------------'
   exit 1
+else
+  # Check if the LAN_PRIVATE_IP is reachable
+  if ! ping -c 1 -W 1 "$LAN_PRIVATE_IP" > /dev/null; then
+    echo "ERROR: LAN_PRIVATE_IP $LAN_PRIVATE_IP is not reachable"
+    echo "    Maybe you changed your network or the IP is wrong"
+    echo "    Please update the LAN_PRIVATE_IP in the .env file or"
+    echo "    run the configure_lan_private_ip script again:"
+    echo ""
+    echo "        - Linux: ./configure_lan_private_ip_linux.sh"
+    echo "        - MacOS: ./configure_lan_private_ip_macos.sh"
+    echo "        - Windows: .\configure_lan_private_ip_windows.bat"
+    echo ""
+    exit 1
+  fi
 fi
 
 if [ "$LAN_MODE" = 'true' ] && [ "$USE_HTTPS" = 'false' ]; then

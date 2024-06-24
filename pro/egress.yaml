@@ -26,7 +26,7 @@ s3:
 # Defaults are set for unlimited operations.
 # Change these values according to your needs.
 cpu_cost:
-    max_cpu_utilization: 0.99
+    max_cpu_utilization: 0.80
     room_composite_cpu_cost: 0.01
     audio_room_composite_cpu_cost: 0.01
     web_cpu_cost: 0.01

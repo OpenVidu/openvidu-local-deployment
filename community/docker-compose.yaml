@@ -102,7 +102,7 @@ services:
     ports:
       - 3478:3478/udp
       - 7881:7881/tcp
-      - 7882-7892:7882-7892/udp
+      - 7900-7999:7900-7999/udp
     entrypoint: /bin/sh /scripts/entrypoint.sh
     command: --config /etc/livekit.yaml
     volumes:

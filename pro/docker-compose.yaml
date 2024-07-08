@@ -176,6 +176,8 @@ services:
     restart: unless-stopped
     container_name: openvidu-v2compatibility
     entrypoint: /bin/sh /scripts/entrypoint.sh
+    extra_hosts:
+      - host.docker.internal:host-gateway
     ports:
       - 4443:4443
     environment:
@@ -200,6 +202,7 @@ services:
       - V2COMPAT_REDIS_PASSWORD=${REDIS_PASSWORD:-}
       - V2COMPAT_REDIS_DB=0
       - V2COMPAT_OPENVIDU_WEBHOOK=false
+      - V2COMPAT_OPENVIDU_WEBHOOK_ENDPOINT=http://host.docker.internal:7777/webhook
       - OPENVIDU_DEPLOYMENT_TYPE=local
     volumes:
       - ./recordings:/opt/openvidu/recordings

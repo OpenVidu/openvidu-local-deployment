@@ -106,7 +106,7 @@ services:
     entrypoint: /bin/sh /scripts/entrypoint.sh
     command: --config /etc/livekit.yaml
     volumes:
-      - ./livekit.yaml:/tmp/livekit.yaml
+      - ./livekit.yaml:/etc/livekit.yaml
       - ./scripts/entrypoint_openvidu.sh:/scripts/entrypoint.sh
     depends_on:
       setup:

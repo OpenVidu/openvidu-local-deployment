@@ -1,6 +1,6 @@
 services:
   caddy-proxy:
-    image: docker.io/openvidu/openvidu-caddy-local:main
+    image: docker.io/openvidu/openvidu-caddy-local:3.0.0-beta2
     container_name: caddy-proxy
     restart: unless-stopped
     extra_hosts:
@@ -79,7 +79,7 @@ services:
         condition: service_completed_successfully
 
   dashboard:
-    image: docker.io/openvidu/openvidu-dashboard:main
+    image: docker.io/openvidu/openvidu-dashboard:3.0.0-beta2
     container_name: dashboard
     restart: unless-stopped
     environment:
@@ -92,7 +92,7 @@ services:
         condition: service_completed_successfully
 
   openvidu:
-    image: docker.io/openvidu/openvidu-server:main
+    image: docker.io/openvidu/openvidu-server:3.0.0-beta2
     restart: unless-stopped
     container_name: openvidu
     extra_hosts:
@@ -144,7 +144,7 @@ services:
         condition: service_completed_successfully
 
   default-app:
-    image: docker.io/openvidu/openvidu-call:main-demo
+    image: docker.io/openvidu/openvidu-call:3.0.0-beta2-demo
     container_name: openvidu-call
     restart: on-failure
     environment:

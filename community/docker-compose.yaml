@@ -1,6 +1,7 @@
 services:
   caddy-proxy:
     image: docker.io/openvidu/openvidu-caddy-local:main
+    platform: linux/amd64
     container_name: caddy-proxy
     restart: unless-stopped
     extra_hosts:
@@ -29,6 +30,7 @@ services:
 
   redis:
     image: docker.io/redis:7.2.5-alpine
+    platform: linux/amd64
     container_name: redis
     restart: unless-stopped
     ports:
@@ -45,6 +47,7 @@ services:
 
   minio:
     image: docker.io/bitnami/minio:2024.6.13
+    platform: linux/amd64
     container_name: minio
     restart: unless-stopped
     ports:
@@ -64,6 +67,7 @@ services:
 
   mongo:
     image: docker.io/bitnami/mongodb:7.0.11
+    platform: linux/amd64
     container_name: mongo
     restart: unless-stopped
     ports:
@@ -80,6 +84,7 @@ services:
 
   dashboard:
     image: docker.io/openvidu/openvidu-dashboard:main
+    platform: linux/amd64
     container_name: dashboard
     restart: unless-stopped
     environment:
@@ -93,6 +98,7 @@ services:
 
   openvidu:
     image: docker.io/openvidu/openvidu-server:main
+    platform: linux/amd64
     restart: unless-stopped
     container_name: openvidu
     extra_hosts:
@@ -114,6 +120,7 @@ services:
 
   ingress:
     image: docker.io/livekit/ingress:v1.2.0
+    platform: linux/amd64
     container_name: ingress
     restart: unless-stopped
     ports:
@@ -130,6 +137,7 @@ services:
 
   egress:
     image: docker.io/livekit/egress:v1.8.2
+    platform: linux/amd64
     restart: unless-stopped
     container_name: egress
     extra_hosts:
@@ -145,6 +153,7 @@ services:
 
   default-app:
     image: docker.io/openvidu/openvidu-call:main-demo
+    platform: linux/amd64
     container_name: openvidu-call
     restart: on-failure
     environment:
@@ -180,6 +189,7 @@ services:
 
   ready-check:
     image: docker.io/curlimages/curl:8.6.0
+    platform: linux/amd64
     container_name: ready-check
     restart: on-failure
     environment:
@@ -207,6 +217,7 @@ services:
 
   setup:
     image: docker.io/busybox:1.36.1
+    platform: linux/amd64
     container_name: setup
     restart: "no"
     volumes:

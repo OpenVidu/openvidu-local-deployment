@@ -6,6 +6,7 @@ if [ "$LAN_PRIVATE_IP" != "none" ]; then
 fi
 
 # Configure container private IP as node private IP
-export LIVEKIT_OPENVIDU_NODE_PRIVATE_IP="$(hostname -i)"
+LIVEKIT_OPENVIDU_NODE_PRIVATE_IP="$(hostname -i)"
+export LIVEKIT_OPENVIDU_NODE_PRIVATE_IP
 
 ./livekit-server "$@"

@@ -30,7 +30,7 @@ services:
         condition: service_completed_successfully
 
   redis:
-    image: docker.io/redis:7.2.5-alpine
+    image: docker.io/redis:7.4.1-alpine
     platform: linux/amd64
     container_name: redis
     restart: unless-stopped
@@ -47,7 +47,7 @@ services:
         condition: service_completed_successfully
 
   minio:
-    image: docker.io/bitnami/minio:2024.6.13
+    image: docker.io/bitnami/minio:2024.10.13-debian-12-r1
     platform: linux/amd64
     restart: unless-stopped
     ports:
@@ -66,7 +66,7 @@ services:
         condition: service_completed_successfully
 
   mongo:
-    image: docker.io/bitnami/mongodb:7.0.11
+    image: docker.io/bitnami/mongodb:7.0.15
     platform: linux/amd64
     container_name: mongo
     restart: unless-stopped
@@ -236,7 +236,7 @@ services:
         condition: service_completed_successfully
 
   ready-check:
-    image: docker.io/curlimages/curl:8.6.0
+    image: docker.io/curlimages/curl:8.11.0
     platform: linux/amd64
     container_name: ready-check
     restart: on-failure
@@ -265,7 +265,7 @@ services:
     command: /bin/sh /scripts/ready-check.sh
 
   setup:
-    image: docker.io/busybox:1.36.1
+    image: docker.io/busybox:1.37.0
     platform: linux/amd64
     container_name: setup
     restart: "no"

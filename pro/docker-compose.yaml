@@ -77,6 +77,7 @@ services:
     environment:
       - MONGODB_ROOT_USER=${MONGO_ADMIN_USERNAME:-}
       - MONGODB_ROOT_PASSWORD=${MONGO_ADMIN_PASSWORD:-}
+      - MONGODB_ADVERTISED_HOSTNAME=mongo
       - MONGODB_REPLICA_SET_MODE=primary
       - MONGODB_REPLICA_SET_NAME=rs0
       - MONGODB_REPLICA_SET_KEY=devreplicasetkey

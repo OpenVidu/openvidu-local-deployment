@@ -4,7 +4,7 @@ openvidu:
         enabled: true
         interval: 10s
         expiration: 768h # 32 days
-        mongo_url: mongodb://mongoadmin:mongoadmin@mongo:27017
+        mongo_url: mongodb://mongoadmin:mongoadmin@mongo:27017/?replicaSet=rs0&readPreference=primaryPreferred
 
 # LiveKit configuration
 port: 7880

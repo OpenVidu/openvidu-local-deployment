@@ -125,7 +125,7 @@ services:
         condition: service_completed_successfully
 
   ingress:
-    image: docker.io/livekit/ingress:v1.4.2
+    image: docker.io/openvidu/ingress:main
     platform: linux/amd64
     container_name: ingress
     restart: unless-stopped

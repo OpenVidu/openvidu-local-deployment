@@ -1,6 +1,6 @@
 services:
   caddy-proxy:
-    image: docker.io/openvidu/openvidu-caddy-local:3.0.0
+    image: docker.io/openvidu/openvidu-caddy-local:3.1.0
     platform: linux/amd64
     container_name: caddy-proxy
     restart: unless-stopped
@@ -29,7 +29,7 @@ services:
         condition: service_completed_successfully
 
   redis:
-    image: docker.io/redis:7.4.1-alpine
+    image: docker.io/redis:7.4.2-alpine
     platform: linux/amd64
     container_name: redis
     restart: unless-stopped
@@ -46,7 +46,7 @@ services:
         condition: service_completed_successfully
 
   minio:
-    image: docker.io/bitnami/minio:2024.10.13-debian-12-r1
+    image: docker.io/bitnami/minio:2025.2.7-debian-12-r0
     platform: linux/amd64
     container_name: minio
     restart: unless-stopped
@@ -66,7 +66,7 @@ services:
         condition: service_completed_successfully
 
   mongo:
-    image: docker.io/bitnami/mongodb:7.0.15
+    image: docker.io/bitnami/mongodb:8.0.4
     platform: linux/amd64
     container_name: mongo
     restart: unless-stopped
@@ -87,7 +87,7 @@ services:
         condition: service_completed_successfully
 
   dashboard:
-    image: docker.io/openvidu/openvidu-dashboard:3.0.0
+    image: docker.io/openvidu/openvidu-dashboard:3.1.0
     platform: linux/amd64
     container_name: dashboard
     restart: unless-stopped
@@ -101,7 +101,7 @@ services:
         condition: service_completed_successfully
 
   openvidu:
-    image: docker.io/openvidu/openvidu-server:3.0.0
+    image: docker.io/openvidu/openvidu-server:3.1.0
     platform: linux/amd64
     restart: unless-stopped
     container_name: openvidu
@@ -123,7 +123,7 @@ services:
         condition: service_completed_successfully
 
   ingress:
-    image: docker.io/livekit/ingress:v1.4.2
+    image: docker.io/openvidu/ingress:3.1.0
     platform: linux/amd64
     container_name: ingress
     restart: unless-stopped
@@ -140,7 +140,7 @@ services:
         condition: service_completed_successfully
 
   egress:
-    image: docker.io/livekit/egress:v1.8.4
+    image: docker.io/livekit/egress:v1.9.0
     platform: linux/amd64
     restart: unless-stopped
     container_name: egress
@@ -150,13 +150,13 @@ services:
       - EGRESS_CONFIG_FILE=/etc/egress.yaml
     volumes:
       - ./egress.yaml:/etc/egress.yaml
-      - egress-data:/home/egress
+      - egress-data:/home/egress/tmp
     depends_on:
       setup:
         condition: service_completed_successfully
 
   default-app:
-    image: docker.io/openvidu/openvidu-call:3.0.0-demo
+    image: docker.io/openvidu/openvidu-call:3.1.0-demo
     platform: linux/amd64
     container_name: openvidu-call
     restart: on-failure
@@ -192,7 +192,7 @@ services:
         condition: service_completed_successfully
 
   ready-check:
-    image: docker.io/curlimages/curl:8.11.0
+    image: docker.io/curlimages/curl:8.12.0
     platform: linux/amd64
     container_name: ready-check
     restart: on-failure

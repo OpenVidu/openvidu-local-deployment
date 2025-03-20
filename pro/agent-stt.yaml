@@ -1,0 +1,219 @@
+##############################
+# Agent common configuration #
+##############################
+
+# Docker image of the agent.
+docker_image: docker.io/openvidu/agent-speech-to-text:main
+
+# Whether this agent should run or not, and how it will connect to Rooms (automatic|manual|disabled)
+# automatic: the agent will run and will automatically connect to new Rooms.
+# manual: the agent will run and will connect to new Rooms only when your application dictates it by using the Agent Dispatch API.
+# disabled: the agent will not run.
+processing: manual
+
+################################
+# Agent specific configuration #
+################################
+speech_to_text:
+  # Whether or not the agent should be hidden to the Participants of the Room.
+  hidden: true
+
+  # Which Speech-To-Text provider to use: aws, azure, google, opeanai, groq, deepgram, assemblyai, fal, clova, speechmatics
+  # The custom configuration for the selected provider must be set below
+  provider: aws
+
+  aws:
+    # Credentials for AWS Transcribe. See https://docs.aws.amazon.com/transcribe/latest/dg/what-is.html
+    aws_access_key_id:
+    aws_secret_access_key:
+    aws_default_region:
+    # See https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html
+    language:
+    # The name of the custom vocabulary you want to use.
+    # See https://docs.aws.amazon.com/transcribe/latest/dg/custom-vocabulary.html
+    vocabulary_name:
+    # The name of the custom language model you want to use.
+    # See https://docs.aws.amazon.com/transcribe/latest/dg/custom-language-models-using.html
+    language_model_name:
+    # Whether or not to enable partial result stabilization. Partial result stabilization can reduce latency in your output, but may impact accuracy.
+    # See https://docs.aws.amazon.com/transcribe/latest/dg/streaming-partial-results.html#streaming-partial-result-stabilization
+    enable_partial_results_stabilization:
+    # Specify the level of stability to use when you enable partial results stabilization (enable_partial_results_stabilization: true). Valid values: high | medium | low
+    # See https://docs.aws.amazon.com/transcribe/latest/dg/streaming-partial-results.html#streaming-partial-result-stabilization
+    partial_results_stability:
+    # The name of the custom vocabulary filter you want to use to mask or remove words.
+    # See https://docs.aws.amazon.com/transcribe/latest/dg/vocabulary-filtering.html
+    vocab_filter_name:
+    # The method used to filter the vocabulary. Valid values: mask | remove | tag
+    # See https://docs.aws.amazon.com/transcribe/latest/dg/vocabulary-filtering.html
+    vocab_filter_method:
+
+  azure:
+    # Credentials for Azure Speech Service.
+    # One of these combinations must be set:
+    #  - speech_host
+    #  - speech_key + speech_region
+    #  - speech_auth_token + speech_region
+    # See https://learn.microsoft.com/en-us/azure/ai-services/speech-service/get-started-speech-to-text?tabs=macos%2Cterminal&pivots=programming-language-python#prerequisites
+    speech_host:
+    speech_key:
+    speech_auth_token:
+    speech_region:
+    # Azure handles multiple languages and can auto-detect the language used. It requires the candidate set to be set.
+    # See https://learn.microsoft.com/en-us/azure/ai-services/speech-service/language-support?tabs=stt#supported-languages
+    languages:
+    # Removes profanity (swearing), or replaces letters of profane words with stars. Valid values: Masked | Removed | Raw
+    # See https://learn.microsoft.com/en-us/azure/ai-services/translator/profanity-filtering
+    profanity:
+
+  google:
+    # Credentials for Google Cloud. This is the content of a Google Cloud credential JSON file.
+    # Below is a dummy example for a credential type of "Service Account" (https://cloud.google.com/iam/docs/service-account-creds#key-types)
+    credentials_info: |
+      {
+        "type": "service_account",
+        "project_id": "my-project",
+        "private_key_id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "private_key": "-----BEGIN PRIVATE KEY-----\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n-----END PRIVATE KEY-----\n",
+        "client_email": "my-email@my-project.iam.gserviceaccount.com",
+        "client_id": "xxxxxxxxxxxxxxxxxxxxx",
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/my-email%40my-project.iam.gserviceaccount.com",
+        "universe_domain": "googleapis.com"
+      }
+    # Which model to use for recognition. If not set, uses the default model for the selected language.
+    # See https://cloud.google.com/speech-to-text/docs/transcription-model
+    model:
+    # The location to use for recognition. Default is "us-central1". Latency will be best if the location is close to your users.
+    # Check supported languages and locations at https://cloud.google.com/speech-to-text/v2/docs/speech-to-text-supported-languages
+    location:
+    # List of language codes to recognize. Default is ["en-US"].
+    # See https://cloud.google.com/speech-to-text/v2/docs/speech-to-text-supported-languages
+    languages:
+    # Whether to detect the language of the audio. Default is true.
+    detect_language:
+    # If 'true', adds punctuation to recognition result hypotheses. This feature is only available in select languages. Setting this
+    # for requests in other languages has no effect at all. The default 'false' value does not add punctuation to result hypotheses.
+    # See https://cloud.google.com/speech-to-text/docs/automatic-punctuation
+    punctuate:
+    # The spoken punctuation behavior for the call. If not set, uses default behavior based on model of choice.
+    # e.g. command_and_search will enable spoken punctuation by default. If 'true', replaces spoken punctuation
+    # with the corresponding symbols in the request. For example, "how are you question mark" becomes "how are you?".
+    # See https://cloud.google.com/speech-to-text/docs/spoken-punctuation for support. If 'false', spoken punctuation is not replaced.
+    spoken_punctuation:
+    # Whether to return interim (non-final) transcription results. Defaults to true.
+    interim_results:
+
+  openai:
+    # API key for OpenAI. See https://platform.openai.com/api-keys
+    api_key:
+    # See https://platform.openai.com/docs/guides/speech-to-text
+    model:
+    # The language of the input audio. Supplying the input language in ISO-639-1 format
+    # (https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) will improve accuracy and latency.
+    language:
+
+  groq:
+    # API key for Groq. See https://console.groq.com/keys
+    api_key:
+    # See https://console.groq.com/docs/speech-to-text
+    model:
+    # The language of the input audio. Supplying the input language in ISO-639-1 format
+    # (https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) will improve accuracy and latency.
+    language:
+
+  deepgram:
+    # See https://console.deepgram.com/
+    api_key:
+    # See https://developers.deepgram.com/reference/speech-to-text-api/listen-streaming#request.query.model
+    model:
+    # See https://developers.deepgram.com/reference/speech-to-text-api/listen-streaming#request.query.language
+    language:
+    # Whether to return interim (non-final) transcription results. Defaults to true
+    interim_results: true
+    # Whether to apply smart formatting to numbers, dates, etc. Defaults to true
+    smart_format: true
+    # Whether to add punctuations to the transcription. Defaults to true. Turn detector will work better with punctuations
+    punctuate: true
+    # Whether to include filler words (um, uh, etc.) in transcription. Defaults to true
+    filler_words: true
+    # Whether to filter profanity from the transcription. Defaults to false
+    profanity_filter: false
+    # List of tuples containing keywords and their boost values for improved recognition. Each tuple should be (keyword: str, boost: float). Defaults to None. keywords does not work with Nova-3 models. Use keyterms instead.
+    # keywords:
+    #   - [OpenVidu, 1.5]
+    #   - [WebRTC, 1]
+    # List of key terms to improve recognition accuracy. Defaults to None. keyterms is supported by Nova-3 models.
+    # Commented below is an example
+    keyterms:
+      # - "OpenVidu"
+      # - "WebRTC"
+
+  assemblyai:
+    # API key for AssemblyAI. See https://assemblyai.com/app/
+    api_key:
+    # See https://www.assemblyai.com/docs/speech-to-text/streaming#add-custom-vocabulary
+    # Commented below is an example
+    word_boost:
+      # - "OpenVidu"
+      # - "WebRTC"
+    # See https://www.assemblyai.com/docs/speech-to-text/streaming#disable-partial-transcripts
+    disable_partial_transcripts: false
+
+  fal:
+    # API key for fal. See https://fal.ai/dashboard/keys
+    api_key:
+    # See https://fal.ai/models/fal-ai/wizper/api#schema
+    task:
+    # See https://fal.ai/models/fal-ai/wizper/api#schema
+    language:
+    # See https://fal.ai/models/fal-ai/wizper/api#schema
+    chunk_level:
+    # See https://fal.ai/models/fal-ai/wizper/api#schema
+    version:
+
+  clova:
+    # Secret key issued when registering the app
+    api_key:
+    # API Gateway's unique invoke URL created in CLOVA Speech Domain.
+    # See https://guide.ncloud-docs.com/docs/en/clovaspeech-domain#create-domain
+    invoke_url:
+    # See https://api.ncloud-docs.com/docs/en/ai-application-service-clovaspeech-longsentence
+    language:
+    # Value between 0 and 1 indicating the threshold for the confidence score of the transcribed text. Default is 0.5.
+    # If the confidence score is lower than the threshold, the transcription event is not sent to the client.
+    # For a definition of the confidence score see https://api.ncloud-docs.com/docs/en/ai-application-service-clovaspeech-grpc
+    threshold:
+
+  speechmatics:
+    # API key for Speechmatics. See https://portal.speechmatics.com/manage-access/
+    api_key:
+    # See https://docs.speechmatics.com/rt-api-ref#transcription-config
+    language:
+    # See https://docs.speechmatics.com/features/accuracy-language-packs#output-locale
+    output_locale:
+    # See https://docs.speechmatics.com/features/realtime-latency#partial-transcripts
+    enable_partials:
+    # See https://docs.speechmatics.com/features/realtime-latency#configuration-example
+    max_delay:
+    # See https://docs.speechmatics.com/features/realtime-latency#configuration-example
+    max_delay_mode:
+    # See https://docs.speechmatics.com/features/punctuation-settings
+    # Commented below is an example of punctuation settings
+    punctuation_overrides:
+      # permitted_marks: [ ".", "," ]
+      # sensitivity: 0.4
+    # See https://docs.speechmatics.com/features/custom-dictionary
+    # Commented below is an example of a custom dictionary
+    additional_vocab:
+      # - content: financial crisis
+      # - content: gnocchi
+      #   sounds_like:
+      #     - nyohki
+      #     - nokey
+      #     - nochi
+      # - content: CEO
+      #   sounds_like:
+      #     - C.E.O.

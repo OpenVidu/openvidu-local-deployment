@@ -14,7 +14,7 @@ processing: manual
 ################################
 # Agent specific configuration #
 ################################
-speech_to_text:
+speech_processing:
   # Whether or not the agent should be hidden to the Participants of the Room.
   hidden: true
 

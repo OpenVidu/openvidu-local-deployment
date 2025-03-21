@@ -3,7 +3,7 @@
 ##############################
 
 # Docker image of the agent.
-docker_image: docker.io/openvidu/agent-speech-to-text:main
+docker_image: docker.io/openvidu/agent-speech-processing:main
 
 # Whether this agent should run or not, and how it will connect to Rooms (automatic|manual|disabled)
 # automatic: the agent will run and will automatically connect to new Rooms.

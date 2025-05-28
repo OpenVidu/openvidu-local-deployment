@@ -127,6 +127,8 @@ services:
     platform: linux/amd64
     container_name: ingress
     restart: unless-stopped
+    extra_hosts:
+      - host.docker.internal:host-gateway
     ports:
       - 1935:1935
       - 8085:8085

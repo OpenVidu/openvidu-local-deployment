@@ -25,14 +25,12 @@ storage:
         force_path_style: true
 
 # CPU cost for each type of Egress operation.
-# These values are defaults to prevent any
-# egress operation to exceed resources.
 cpu_cost:
-    room_composite_cpu_cost: 4
-    audio_room_composite_cpu_cost: 1
-    web_cpu_cost: 4
-    audio_web_cpu_cost: 1
-    participant_cpu_cost: 2
-    track_composite_cpu_cost: 1
-    max_cpu_utilization: 0.8
-    track_cpu_cost: 0.5
+    max_cpu_utilization: 0.80
+    room_composite_cpu_cost: 0.01
+    audio_room_composite_cpu_cost: 0.01
+    web_cpu_cost: 0.01
+    audio_web_cpu_cost: 0.01
+    participant_cpu_cost: 0.01
+    track_composite_cpu_cost: 0.01
+    track_cpu_cost: 0.01

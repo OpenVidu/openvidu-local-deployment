@@ -29,7 +29,7 @@ services:
         condition: service_completed_successfully
 
   redis:
-    image: docker.io/redis:7.4.2-alpine
+    image: docker.io/redis:8.0.1-alpine
     platform: linux/amd64
     container_name: redis
     restart: unless-stopped
@@ -46,7 +46,7 @@ services:
         condition: service_completed_successfully
 
   minio:
-    image: docker.io/bitnami/minio:2025.2.7-debian-12-r0
+    image: docker.io/bitnami/minio:2025.5.24-debian-12-r1
     platform: linux/amd64
     container_name: minio
     restart: unless-stopped
@@ -66,7 +66,7 @@ services:
         condition: service_completed_successfully
 
   mongo:
-    image: docker.io/bitnami/mongodb:8.0.4
+    image: docker.io/bitnami/mongodb:8.0.9
     platform: linux/amd64
     container_name: mongo
     restart: unless-stopped
@@ -142,7 +142,7 @@ services:
         condition: service_completed_successfully
 
   egress:
-    image: docker.io/livekit/egress:v1.9.0
+    image: docker.io/livekit/egress:v1.9.1
     platform: linux/amd64
     restart: unless-stopped
     container_name: egress
@@ -194,7 +194,7 @@ services:
         condition: service_completed_successfully
 
   ready-check:
-    image: docker.io/curlimages/curl:8.12.0
+    image: docker.io/curlimages/curl:8.13.0
     platform: linux/amd64
     container_name: ready-check
     restart: on-failure

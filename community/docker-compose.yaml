@@ -55,7 +55,7 @@ services:
     environment:
       - MINIO_ROOT_USER=${MINIO_ACCESS_KEY:-}
       - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY:-}
-      - MINIO_DEFAULT_BUCKETS=openvidu
+      - MINIO_DEFAULT_BUCKETS=openvidu-appdata
       - MINIO_CONSOLE_SUBPATH=/minio-console
       - MINIO_BROWSER_REDIRECT_URL=http://localhost:7880/minio-console
     volumes:
@@ -179,7 +179,7 @@ services:
       - CALL_ADMIN_USER=${CALL_ADMIN_USER:-admin}
       - CALL_ADMIN_SECRET=${CALL_ADMIN_SECRET:-admin}
       - CALL_LOG_LEVEL=${CALL_LOG_LEVEL:-info}
-      - CALL_S3_BUCKET=${CALL_S3_BUCKET:-openvidu}
+      - CALL_S3_BUCKET=${CALL_S3_BUCKET:-openvidu-app-data}
       - CALL_S3_SERVICE_ENDPOINT=${CALL_S3_SERVICE_ENDPOINT:-http://minio:9000}
       - CALL_S3_ACCESS_KEY=${MINIO_ACCESS_KEY}
       - CALL_S3_SECRET_KEY=${MINIO_SECRET_KEY}

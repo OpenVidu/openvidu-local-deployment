@@ -21,7 +21,7 @@ storage:
         # Default region for minio
         region: us-east-1
         endpoint: http://minio:9000
-        bucket: openvidu
+        bucket: openvidu-appdata
         force_path_style: true
 
 # CPU cost for each type of Egress operation.

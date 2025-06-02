@@ -29,7 +29,7 @@ services:
         condition: service_completed_successfully
 
   redis:
-    image: docker.io/redis:7.4.3-alpine
+    image: docker.io/redis:7.4.4-alpine
     platform: linux/amd64
     container_name: redis
     restart: unless-stopped

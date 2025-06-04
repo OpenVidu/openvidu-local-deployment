@@ -21,12 +21,14 @@ storage:
         # Default region for minio
         region: us-east-1
         endpoint: http://minio:9000
-        bucket: openvidu
+        bucket: openvidu-appdata
         force_path_style: true
+    #azure:
+    #    account_name: your_account_name
+    #    account_key: your_account_key
+    #    container_name: openvidu-appdata
 
 # CPU cost for each type of Egress operation.
-# Defaults are set for unlimited operations.
-# Change these values according to your needs.
 cpu_cost:
     max_cpu_utilization: 0.80
     room_composite_cpu_cost: 0.01

@@ -1,6 +1,6 @@
 services:
   caddy-proxy:
-    image: docker.io/openvidu/openvidu-caddy-local:3.1.0
+    image: docker.io/openvidu/openvidu-caddy-local:3.2.0
     platform: linux/amd64
     container_name: caddy-proxy
     restart: unless-stopped
@@ -29,7 +29,7 @@ services:
         condition: service_completed_successfully
 
   redis:
-    image: docker.io/redis:7.4.2-alpine
+    image: docker.io/redis:7.4.4-alpine
     platform: linux/amd64
     container_name: redis
     restart: unless-stopped
@@ -46,7 +46,7 @@ services:
         condition: service_completed_successfully
 
   minio:
-    image: docker.io/bitnami/minio:2025.2.7-debian-12-r0
+    image: docker.io/bitnami/minio:2025.5.24-debian-12-r1
     platform: linux/amd64
     container_name: minio
     restart: unless-stopped
@@ -55,7 +55,7 @@ services:
     environment:
       - MINIO_ROOT_USER=${MINIO_ACCESS_KEY:-}
       - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY:-}
-      - MINIO_DEFAULT_BUCKETS=openvidu
+      - MINIO_DEFAULT_BUCKETS=openvidu-appdata
       - MINIO_CONSOLE_SUBPATH=/minio-console
       - MINIO_BROWSER_REDIRECT_URL=http://localhost:7880/minio-console
     volumes:
@@ -66,7 +66,7 @@ services:
         condition: service_completed_successfully
 
   mongo:
-    image: docker.io/bitnami/mongodb:8.0.4
+    image: docker.io/bitnami/mongodb:8.0.9
     platform: linux/amd64
     container_name: mongo
     restart: unless-stopped
@@ -87,7 +87,7 @@ services:
         condition: service_completed_successfully
 
   dashboard:
-    image: docker.io/openvidu/openvidu-dashboard:3.1.0
+    image: docker.io/openvidu/openvidu-dashboard:3.2.0
     platform: linux/amd64
     container_name: dashboard
     restart: unless-stopped
@@ -101,7 +101,7 @@ services:
         condition: service_completed_successfully
 
   openvidu:
-    image: docker.io/openvidu/openvidu-server:3.1.0
+    image: docker.io/openvidu/openvidu-server:3.2.0
     platform: linux/amd64
     restart: unless-stopped
     container_name: openvidu
@@ -123,10 +123,12 @@ services:
         condition: service_completed_successfully
 
   ingress:
-    image: docker.io/openvidu/ingress:3.1.0
+    image: docker.io/openvidu/ingress:3.2.0
     platform: linux/amd64
     container_name: ingress
     restart: unless-stopped
+    extra_hosts:
+      - host.docker.internal:host-gateway
     ports:
       - 1935:1935
       - 8085:8085
@@ -140,7 +142,7 @@ services:
         condition: service_completed_successfully
 
   egress:
-    image: docker.io/livekit/egress:v1.9.0
+    image: docker.io/livekit/egress:v1.9.1
     platform: linux/amd64
     restart: unless-stopped
     container_name: egress
@@ -156,7 +158,7 @@ services:
         condition: service_completed_successfully
 
   default-app:
-    image: docker.io/openvidu/openvidu-call:3.1.0-demo
+    image: docker.io/openvidu/openvidu-call:3.2.0-demo
     platform: linux/amd64
     container_name: openvidu-call
     restart: on-failure
@@ -177,7 +179,7 @@ services:
       - CALL_ADMIN_USER=${CALL_ADMIN_USER:-admin}
       - CALL_ADMIN_SECRET=${CALL_ADMIN_SECRET:-admin}
       - CALL_LOG_LEVEL=${CALL_LOG_LEVEL:-info}
-      - CALL_S3_BUCKET=${CALL_S3_BUCKET:-openvidu}
+      - CALL_S3_BUCKET=${CALL_S3_BUCKET:-openvidu-appdata}
       - CALL_S3_SERVICE_ENDPOINT=${CALL_S3_SERVICE_ENDPOINT:-http://minio:9000}
       - CALL_S3_ACCESS_KEY=${MINIO_ACCESS_KEY}
       - CALL_S3_SECRET_KEY=${MINIO_SECRET_KEY}
@@ -192,7 +194,7 @@ services:
         condition: service_completed_successfully
 
   ready-check:
-    image: docker.io/curlimages/curl:8.12.0
+    image: docker.io/curlimages/curl:8.13.0
     platform: linux/amd64
     container_name: ready-check
     restart: on-failure
@@ -238,9 +240,21 @@ services:
     command: /bin/sh /scripts/setup.sh
 
 volumes:
+  agents-config:
+    name: openvidu-agents-config
   minio-certs:
+    name: openvidu-minio-certs
   mongodb-config:
+    name: openvidu-mongodb-config
   redis:
+    name: openvidu-redis
   minio-data:
+    name: openvidu-minio-data
   mongo-data:
+    name: openvidu-mongo-data
   egress-data:
+    name: openvidu-egress-data
+
+networks:
+  default:
+    name: openvidu-community

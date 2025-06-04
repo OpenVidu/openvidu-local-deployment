@@ -23,6 +23,10 @@ storage:
         endpoint: http://minio:9000
         bucket: openvidu-appdata
         force_path_style: true
+    #azure:
+    #    account_name: your_account_name
+    #    account_key: your_account_key
+    #    container_name: openvidu-appdata
 
 # CPU cost for each type of Egress operation.
 cpu_cost:

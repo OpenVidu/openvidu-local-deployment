@@ -10,7 +10,7 @@ live_captions:
   # - manual: the agent will connect to new Rooms only when your application dictates it by using the Agent Dispatch API.
   processing: automatic
 
-  # Which speech-to-text AI provider to use [aws, azure, google, opeanai, groq, deepgram, assemblyai, fal, clova, speechmatics, gladia]
+  # Which speech-to-text AI provider to use [aws, azure, google, opeanai, groq, deepgram, assemblyai, fal, clova, speechmatics, gladia, sarvam]
   # The custom configuration for the selected provider must be set below
   provider:
 
@@ -216,3 +216,11 @@ live_captions:
     languages:
     # Whether to allow switching between languages during recognition. Defaults to True
     code_switching:
+
+  sarvam:
+    # API key for Sarvam. See https://dashboard.sarvam.ai/key-management
+    api_key:
+    # BCP-47 language code for supported Indian languages. See https://docs.sarvam.ai/api-reference-docs/speech-to-text/transcribe#request.body.language_code.language_code
+    language:
+    # The Sarvam STT model to use. See https://docs.sarvam.ai/api-reference-docs/speech-to-text/transcribe#request.body.model.model
+    model:

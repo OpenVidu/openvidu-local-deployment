@@ -1,24 +1,16 @@
-##############################
-# Agent common configuration #
-##############################
-
 # Docker image of the agent.
 docker_image: docker.io/openvidu/agent-speech-processing:main
 
-# Whether this agent should run or not, and how it will connect to Rooms (automatic|manual|disabled)
-# automatic: the agent will run and will automatically connect to new Rooms.
-# manual: the agent will run and will connect to new Rooms only when your application dictates it by using the Agent Dispatch API.
-# disabled: the agent will not run.
-processing: disabled
+# Whether to run the agent or not.
+enabled: false
 
-################################
-# Agent specific configuration #
-################################
-speech_processing:
-  # Whether or not the agent should be hidden to the Participants of the Room.
-  hidden: true
+live_captions:
+  # How this agent will connect to Rooms [automatic, manual]
+  # - automatic: the agent will automatically connect to new Rooms.
+  # - manual: the agent will connect to new Rooms only when your application dictates it by using the Agent Dispatch API.
+  processing: automatic
 
-  # Which Speech-To-Text provider to use: aws, azure, google, opeanai, groq, deepgram, assemblyai, fal, clova, speechmatics, gladia
+  # Which speech-to-text AI provider to use [aws, azure, google, opeanai, groq, deepgram, assemblyai, fal, clova, speechmatics, gladia]
   # The custom configuration for the selected provider must be set below
   provider:
 
@@ -154,10 +146,10 @@ speech_processing:
       # - "WebRTC"
 
   assemblyai:
-    # API key for AssemblyAI. See https://assemblyai.com/app/
+    # API key for AssemblyAI. See https://www.assemblyai.com/dashboard/api-keys
     api_key:
-    # Whether to return formatted final transcripts. If enabled, formatted final transcripts are emitted shortly following an end-of-turn detection.
-    format_turns:
+    # Whether to return formatted final transcripts (proper punctuation, letter casing...). If enabled, formatted final transcripts are emitted shortly following an end-of-turn detection.
+    format_turns: true
 
   fal:
     # API key for fal. See https://fal.ai/dashboard/keys

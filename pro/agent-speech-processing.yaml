@@ -58,6 +58,29 @@ live_captions:
     # See https://learn.microsoft.com/en-us/azure/ai-services/translator/profanity-filtering
     profanity:
 
+  azure_openai:
+    # Credentials for Azure OpenAI APIs. See https://learn.microsoft.com/en-us/azure/api-management/api-management-authenticate-authorize-azure-openai
+    # Azure OpenAI API key. Mandatory value.
+    azure_api_key:
+    # Azure Active Directory token. Mandatory value.
+    azure_ad_token:
+    # Azure OpenAI endpoint in the following format: https://{your-resource-name}.openai.azure.com. Mandatory value.
+    azure_endpoint:
+    # Name of your model deployment. If given with `azure_endpoint`, sets the base client URL to include `/deployments/{azure_deployment}`.
+    azure_deployment:
+    # OpenAI REST API version used for the request. Mandatory value.
+    api_version:
+    # OpenAI organization ID.
+    organization:
+    # OpenAI project ID.
+    project:
+    # The language code to use for transcription (e.g., "en" for English).
+    language:
+    # ID of the model to use for speech-to-text.
+    model:
+    # Initial prompt to guide the transcription.
+    prompt:
+
   google:
     # Credentials for Google Cloud. This is the content of a Google Cloud credential JSON file.
     # Below is a dummy example for a credential type of "Service Account" (https://cloud.google.com/iam/docs/service-account-creds#key-types)
@@ -155,13 +178,7 @@ live_captions:
     # API key for fal. See https://fal.ai/dashboard/keys
     api_key:
     # See https://fal.ai/models/fal-ai/wizper/api#schema
-    task:
-    # See https://fal.ai/models/fal-ai/wizper/api#schema
     language:
-    # See https://fal.ai/models/fal-ai/wizper/api#schema
-    chunk_level:
-    # See https://fal.ai/models/fal-ai/wizper/api#schema
-    version:
 
   clova:
     # Secret key issued when registering the app
@@ -179,18 +196,28 @@ live_captions:
   speechmatics:
     # API key for Speechmatics. See https://portal.speechmatics.com/manage-access/
     api_key:
-    # See https://docs.speechmatics.com/rt-api-ref#transcription-config
+    # ISO 639-1 language code. All languages are global and can understand different dialects/accents. To see the list of all supported languages, see https://docs.speechmatics.com/introduction/supported-languages
     language:
-    # See https://docs.speechmatics.com/features/accuracy-language-packs#output-locale
-    output_locale:
-    # See https://docs.speechmatics.com/features/realtime-latency#partial-transcripts
+    # Operating point to use for the transcription per required accuracy & complexity. To learn more, see https://docs.speechmatics.com/features/accuracy-language-packs#accuracy
+    operating_point:
+    # Partial transcripts allow you to receive preliminary transcriptions and update as more context is available until the higher-accuracy final transcript is returned. Partials are returned faster but without any post-processing such as formatting. See https://docs.speechmatics.com/features/realtime-latency#partial-transcripts
     enable_partials:
-    # See https://docs.speechmatics.com/features/realtime-latency#configuration-example
+    # RFC-5646 language code to make spelling rules more consistent in the transcription output. See https://docs.speechmatics.com/features/word-tagging#output-locale
+    output_locale:
+    # The delay in seconds between the end of a spoken word and returning the final transcript results. See https://docs.speechmatics.com/features/realtime-latency#configuration-example
     max_delay:
     # See https://docs.speechmatics.com/features/realtime-latency#configuration-example
     max_delay_mode:
-    # See https://docs.speechmatics.com/features/punctuation-settings
-    # Commented below is an example of punctuation settings
+    # Configuration for speaker diarization. See https://docs.speechmatics.com/features/diarization
+    speaker_diarization_config:
+      # See https://docs.speechmatics.com/features/diarization#max-speakers
+      max_speakers:
+      # See https://docs.speechmatics.com/features/diarization#speaker-sensitivity
+      speaker_sensitivity:
+      # See https://docs.speechmatics.com/features/diarization#prefer-current-speaker
+      prefer_current_speaker:
+    # Permitted puctuation marks for advanced punctuation. See https://docs.speechmatics.com/features/punctuation-settings
+    # Commented is an example of punctuation settings
     punctuation_overrides:
       # permitted_marks: [ ".", "," ]
       # sensitivity: 0.4

@@ -51,18 +51,18 @@ live_captions:
     speech_key:
     speech_auth_token:
     speech_region:
-    # Azure handles multiple languages and can auto-detect the language used. It requires the candidate set to be set.
+    # Azure handles multiple languages and can auto-detect the language used. It requires the candidate set to be set. E.g. ["en-US", "es-ES"]
     # See https://learn.microsoft.com/en-us/azure/ai-services/speech-service/language-support?tabs=stt#supported-languages
-    languages:
+    language:
     # Removes profanity (swearing), or replaces letters of profane words with stars. Valid values: Masked | Removed | Raw
     # See https://learn.microsoft.com/en-us/azure/ai-services/translator/profanity-filtering
     profanity:
 
   azure_openai:
     # Credentials for Azure OpenAI APIs. See https://learn.microsoft.com/en-us/azure/api-management/api-management-authenticate-authorize-azure-openai
-    # Azure OpenAI API key. Mandatory value.
+    # Azure OpenAI API key
     azure_api_key:
-    # Azure Active Directory token. Mandatory value.
+    # Azure Active Directory token
     azure_ad_token:
     # Azure OpenAI endpoint in the following format: https://{your-resource-name}.openai.azure.com. Mandatory value.
     azure_endpoint:
@@ -124,11 +124,13 @@ live_captions:
   openai:
     # API key for OpenAI. See https://platform.openai.com/api-keys
     api_key:
-    # See https://platform.openai.com/docs/guides/speech-to-text
+    # The OpenAI model to use for transcription. See https://platform.openai.com/docs/guides/speech-to-text
     model:
     # The language of the input audio. Supplying the input language in ISO-639-1 format
     # (https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) will improve accuracy and latency.
     language:
+    # Optional text prompt to guide the transcription. Only supported for whisper-1.
+    prompt:
 
   groq:
     # API key for Groq. See https://console.groq.com/keys
@@ -148,15 +150,19 @@ live_captions:
     model:
     # See https://developers.deepgram.com/reference/speech-to-text-api/listen-streaming#request.query.language
     language:
-    # Whether to return interim (non-final) transcription results. Defaults to true
+    # Whether to enable automatic language detection. Defaults to false. See https://developers.deepgram.com/docs/language-detection
+    detect_language: false
+    # Whether to return interim (non-final) transcription results. Defaults to true. See https://developers.deepgram.com/docs/interim-results
     interim_results: true
-    # Whether to apply smart formatting to numbers, dates, etc. Defaults to true
+    # Whether to apply smart formatting to numbers, dates, etc. Defaults to true. See https://developers.deepgram.com/docs/smart-format
     smart_format: true
-    # Whether to add punctuations to the transcription. Defaults to true. Turn detector will work better with punctuations
+    # When smart_format is used, ensures it does not wait for sequence to be complete before returning results. Defaults to true. See https://developers.deepgram.com/docs/smart-format#using-no-delay
+    no_delay: true
+    # Whether to add punctuations to the transcription. Defaults to true. Turn detector will work better with punctuations. See https://developers.deepgram.com/docs/punctuation
     punctuate: true
-    # Whether to include filler words (um, uh, etc.) in transcription. Defaults to true
+    # Whether to include filler words (um, uh, etc.) in transcription. Defaults to true. See https://developers.deepgram.com/docs/filler-words
     filler_words: true
-    # Whether to filter profanity from the transcription. Defaults to false
+    # Whether to filter profanity from the transcription. Defaults to false. See https://developers.deepgram.com/docs/profanity-filter
     profanity_filter: false
     # List of tuples containing keywords and their boost values for improved recognition. Each tuple should be (keyword: str, boost: float). Defaults to None. keywords does not work with Nova-3 models. Use keyterms instead.
     # keywords:

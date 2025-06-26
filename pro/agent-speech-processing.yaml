@@ -1,5 +1,5 @@
 # Docker image of the agent.
-docker_image: docker.io/openvidu/agent-speech-processing:3.3.0
+docker_image: docker.io/openvidu/agent-speech-processing:main
 
 # Whether to run the agent or not.
 enabled: false

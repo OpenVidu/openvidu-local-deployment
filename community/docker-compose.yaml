@@ -1,6 +1,6 @@
 services:
   caddy-proxy:
-    image: docker.io/openvidu/openvidu-caddy-local:3.2.0
+    image: docker.io/openvidu/openvidu-caddy-local:3.3.0
     platform: linux/amd64
     container_name: caddy-proxy
     restart: unless-stopped
@@ -87,7 +87,7 @@ services:
         condition: service_completed_successfully
 
   dashboard:
-    image: docker.io/openvidu/openvidu-dashboard:3.2.0
+    image: docker.io/openvidu/openvidu-dashboard:3.3.0
     platform: linux/amd64
     container_name: dashboard
     restart: unless-stopped
@@ -101,7 +101,7 @@ services:
         condition: service_completed_successfully
 
   openvidu:
-    image: docker.io/openvidu/openvidu-server:3.2.0
+    image: docker.io/openvidu/openvidu-server:3.3.0
     platform: linux/amd64
     restart: unless-stopped
     container_name: openvidu
@@ -123,7 +123,7 @@ services:
         condition: service_completed_successfully
 
   ingress:
-    image: docker.io/openvidu/ingress:3.2.0
+    image: docker.io/openvidu/ingress:3.3.0
     platform: linux/amd64
     container_name: ingress
     restart: unless-stopped
@@ -158,7 +158,7 @@ services:
         condition: service_completed_successfully
 
   default-app:
-    image: docker.io/openvidu/openvidu-call:3.2.0-demo
+    image: docker.io/openvidu/openvidu-call:3.3.0-demo
     platform: linux/amd64
     container_name: openvidu-call
     restart: on-failure
@@ -189,6 +189,31 @@ services:
       - ./scripts/entrypoint_default_app.sh:/scripts/entrypoint.sh
       - ./scripts/utils.sh:/scripts/utils.sh
     entrypoint: /bin/sh /scripts/entrypoint.sh
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+
+  operator:
+    image: docker.io/openvidu/openvidu-operator:3.3.0
+    platform: linux/amd64
+    container_name: operator
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - agents-config:/agents-config
+      - ./:/deployment
+    environment:
+      - PLATFORM=linux/amd64
+      - MODE=agent-manager-local
+      - DEPLOYMENT_FILES_DIR=/deployment
+      - AGENTS_CONFIG_DIR=/agents-config
+      - NETWORK_NAME=openvidu-community
+      - AGENTS_CONFIG_VOLUME=openvidu-agents-config
+      - LIVEKIT_URL=ws://openvidu:7880/
+      - LIVEKIT_API_KEY=${LIVEKIT_API_KEY:-}
+      - LIVEKIT_API_SECRET=${LIVEKIT_API_SECRET:-}
+      - REDIS_ADDRESS=redis:6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
     depends_on:
       setup:
         condition: service_completed_successfully

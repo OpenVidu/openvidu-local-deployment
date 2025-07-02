@@ -257,9 +257,3 @@ live_captions:
     language:
     # The Sarvam STT model to use. See https://docs.sarvam.ai/api-reference-docs/speech-to-text/transcribe#request.body.model.model
     model:
-
-  spitch:
-    # API key for Spitch. See https://www.spitch.studio/api-keys
-    api_key:
-    # See https://docs.spitch.app/features/transcription#language-support
-    language:

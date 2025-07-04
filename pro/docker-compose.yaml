@@ -18,6 +18,9 @@ services:
       - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY:-}
       - MINIO_SECRET_KEY=${MINIO_SECRET_KEY:-}
       - V2COMPAT_OPENVIDU_SECRET=${LIVEKIT_API_SECRET:-}
+      - MEET_ADMIN_USER=${MEET_ADMIN_USER:-}
+      - MEET_ADMIN_SECRET=${MEET_ADMIN_SECRET:-}
+      - MEET_API_KEY=${MEET_API_KEY:-}
     volumes:
       - ./custom-layout:/var/www/custom-layout
     ports:

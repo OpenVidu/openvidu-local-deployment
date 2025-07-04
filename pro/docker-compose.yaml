@@ -25,6 +25,7 @@ services:
       - 6443:6443
       - 7443:7443
       - 7880:7880
+      - 9443:9443
     depends_on:
       setup:
         condition: service_completed_successfully
@@ -159,36 +160,45 @@ services:
       setup:
         condition: service_completed_successfully
 
-  default-app:
-    image: docker.io/openvidu/openvidu-call:main-demo
+  openvidu-meet:
+    image: docker.io/openvidu/openvidu-meet:main
     platform: linux/amd64
-    container_name: openvidu-call
+    container_name: openvidu-meet
     restart: on-failure
+    ports:
+      - 9080:9080
+    extra_hosts:
+      - host.docker.internal:host-gateway
     environment:
       - USE_HTTPS=${USE_HTTPS:-false}
       - LAN_MODE=${LAN_MODE:-false}
       - LAN_DOMAIN=${LAN_DOMAIN:-}
       - LAN_PRIVATE_IP=${LAN_PRIVATE_IP:-}
-      - SERVER_PORT=6080
-      - CALL_NAME_ID=OpenViduCall-LOCAL
+      - SERVER_PORT=9080
+      - MEET_LOG_LEVEL=${MEET_LOG_LEVEL:-info}
+      - MEET_NAME_ID=openviduMeet-LOCAL
+      - MEET_API_KEY=${MEET_API_KEY:-meet-api-key}
+      - MEET_ADMIN_USER=${MEET_ADMIN_USER:-admin}
+      - MEET_ADMIN_SECRET=${MEET_ADMIN_SECRET:-admin}
+      - MEET_COOKIE_SECURE=false
+      - MEET_WEBHOOK_ENABLED=true
+      - MEET_WEBHOOK_URL=${MEET_WEBHOOK_URL:-http://host.docker.internal:5080/webhook}
       - LIVEKIT_URL_PRIVATE=ws://openvidu:7880/
       - LIVEKIT_API_KEY=${LIVEKIT_API_KEY}
       - LIVEKIT_API_SECRET=${LIVEKIT_API_SECRET}
-      - CALL_PRIVATE_ACCESS=${CALL_PRIVATE_ACCESS:-false}
-      - CALL_USER=${CALL_USER:-}
-      - CALL_SECRET=${CALL_SECRET:-}
-      - CALL_RECORDING=${CALL_RECORDING:-}
-      - CALL_ADMIN_USER=${CALL_ADMIN_USER:-admin}
-      - CALL_ADMIN_SECRET=${CALL_ADMIN_SECRET:-admin}
-      - CALL_LOG_LEVEL=${CALL_LOG_LEVEL:-info}
-      - CALL_S3_BUCKET=${CALL_S3_BUCKET:-openvidu-appdata}
-      - CALL_S3_SERVICE_ENDPOINT=${CALL_S3_SERVICE_ENDPOINT:-http://minio:9000}
-      - CALL_S3_ACCESS_KEY=${MINIO_ACCESS_KEY}
-      - CALL_S3_SECRET_KEY=${MINIO_SECRET_KEY}
-      - CALL_AWS_REGION=${CALL_AWS_REGION:-us-east-1}
-      - CALL_S3_WITH_PATH_STYLE_ACCESS=${CALL_S3_WITH_PATH_STYLE_ACCESS:-true}
+      - MEET_S3_BUCKET=${MEET_S3_BUCKET:-openvidu-appdata}
+      - MEET_S3_SUBBUCKET=${MEET_S3_SUBBUCKET:-openvidu-meet}
+      - MEET_S3_SERVICE_ENDPOINT=${MEET_S3_SERVICE_ENDPOINT:-http://minio:9000}
+      - MEET_S3_ACCESS_KEY=${MINIO_ACCESS_KEY}
+      - MEET_S3_SECRET_KEY=${MINIO_SECRET_KEY}
+      - MEET_AWS_REGION=${MEET_AWS_REGION:-us-east-1}
+      - MEET_S3_WITH_PATH_STYLE_ACCESS=${MEET_S3_WITH_PATH_STYLE_ACCESS:-true}
+      - MEET_REDIS_HOST=redis
+      - MEET_REDIS_PORT=6379
+      - MEET_REDIS_PASSWORD=${REDIS_PASSWORD:-}
+      - MEET_REDIS_DB=0
     volumes:
-      - ./scripts/entrypoint_default_app.sh:/scripts/entrypoint.sh
+      - ./scripts/entrypoint_openvidu_meet.sh:/scripts/entrypoint.sh
       - ./scripts/utils.sh:/scripts/utils.sh
     entrypoint: /bin/sh /scripts/entrypoint.sh
     depends_on:

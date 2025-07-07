@@ -251,7 +251,7 @@ services:
         condition: service_completed_successfully
 
   ready-check:
-    image: docker.io/curlimages/curl:8.13.0
+    image: docker.io/openvidu/ready-check:main
     platform: linux/amd64
     container_name: ready-check
     restart: on-failure
@@ -260,13 +260,16 @@ services:
       - LAN_DOMAIN=${LAN_DOMAIN:-}
       - LAN_MODE=${LAN_MODE:-false}
       - LAN_PRIVATE_IP=${LAN_PRIVATE_IP:-}
-      - V2COMPAT_OPENVIDU_SECRET=${LIVEKIT_API_SECRET:-}
-      - LIVEKIT_API_KEY=${LIVEKIT_API_KEY:-}
-      - LIVEKIT_API_SECRET=${LIVEKIT_API_SECRET:-}
       - DASHBOARD_ADMIN_USERNAME=${DASHBOARD_ADMIN_USERNAME:-}
       - DASHBOARD_ADMIN_PASSWORD=${DASHBOARD_ADMIN_PASSWORD:-}
       - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY:-}
       - MINIO_SECRET_KEY=${MINIO_SECRET_KEY:-}
+      - LIVEKIT_API_KEY=${LIVEKIT_API_KEY:-}
+      - LIVEKIT_API_SECRET=${LIVEKIT_API_SECRET:-}
+      - V2COMPAT_OPENVIDU_SECRET=${LIVEKIT_API_SECRET:-}
+      - MEET_ADMIN_USER=${MEET_ADMIN_USER:-}
+      - MEET_ADMIN_SECRET=${MEET_ADMIN_SECRET:-}
+      - MEET_API_KEY=${MEET_API_KEY:-}
     depends_on:
       - openvidu
       - ingress
@@ -274,10 +277,6 @@ services:
       - dashboard
       - minio
       - mongo
-    volumes:
-      - ./scripts/ready-check.sh:/scripts/ready-check.sh
-      - ./scripts/utils.sh:/scripts/utils.sh
-    command: /bin/sh /scripts/ready-check.sh
 
   operator:
     image: docker.io/openvidu/openvidu-operator:main

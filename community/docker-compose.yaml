@@ -167,7 +167,7 @@ services:
     container_name: openvidu-meet
     restart: on-failure
     ports:
-      - 9080:9080
+      - 9080:6080
     extra_hosts:
       - host.docker.internal:host-gateway
     environment:
@@ -175,7 +175,7 @@ services:
       - LAN_MODE=${LAN_MODE:-false}
       - LAN_DOMAIN=${LAN_DOMAIN:-}
       - LAN_PRIVATE_IP=${LAN_PRIVATE_IP:-}
-      - SERVER_PORT=9080
+      - SERVER_PORT=6080
       - MEET_LOG_LEVEL=${MEET_LOG_LEVEL:-info}
       - MEET_NAME_ID=openviduMeet-LOCAL
       - MEET_API_KEY=${MEET_API_KEY:-meet-api-key}

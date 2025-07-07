@@ -56,7 +56,7 @@ webhook:
     urls:
         - http://host.docker.internal:4443/livekit/webhook # For OpenVidu 2 compatibility
         - http://host.docker.internal:6080/livekit/webhook
-        - http://openvidu-meet:9080/livekit/webhook
+        - http://openvidu-meet:6080/livekit/webhook
 ingress:
     rtmp_base_url: rtmp://localhost:1935/rtmp
     whip_base_url: http://localhost:8085/whip

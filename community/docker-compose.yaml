@@ -232,11 +232,12 @@ services:
         condition: service_completed_successfully
 
   ready-check:
-    image: docker.io/openvidu/ready-check:main
+    image: docker.io/openvidu/openvidu-operator:main
     platform: linux/amd64
     container_name: ready-check
     restart: on-failure
     environment:
+      - MODE=local-ready-check
       - USE_HTTPS=${USE_HTTPS:-false}
       - LAN_DOMAIN=${LAN_DOMAIN:-}
       - LAN_MODE=${LAN_MODE:-false}

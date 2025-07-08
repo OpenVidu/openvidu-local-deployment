@@ -112,6 +112,7 @@ services:
     extra_hosts:
       - host.docker.internal:host-gateway
     environment:
+      - LAN_MODE=${LAN_MODE:-false}
       - LAN_PRIVATE_IP=${LAN_PRIVATE_IP:-}
       - OPENVIDU_DEPLOYMENT_TYPE=local
       - OPENVIDU_ENVIRONMENT=on_premise

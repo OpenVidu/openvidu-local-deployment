@@ -113,6 +113,7 @@ services:
       - host.docker.internal:host-gateway
     environment:
       - LAN_PRIVATE_IP=${LAN_PRIVATE_IP:-}
+      - LAN_MODE=${LAN_MODE:-false}
     ports:
       - 3478:3478/udp
       - 7881:7881/tcp

@@ -33,6 +33,12 @@ if [ "$LAN_MODE" = 'true' ] && [ -n "$LAN_PRIVATE_IP" ]; then
     echo "        - MacOS: ./configure_lan_private_ip_macos.sh"
     echo "        - Windows: .\configure_lan_private_ip_windows.bat"
     echo ""
+    echo "    If you don't want to access OpenVidu through your LAN,"
+    echo "    you can run without LAN_MODE enabled, simply set"
+    echo "    the following variables in the .env file:"
+    echo "        USE_HTTPS=false"
+    echo "        LAN_MODE=false"
+    echo ""
     exit 1
   fi
 fi

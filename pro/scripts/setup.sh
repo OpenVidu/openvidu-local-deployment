@@ -44,8 +44,7 @@ if [ "$LAN_MODE" = 'true' ] && [ -n "$LAN_PRIVATE_IP" ]; then
 fi
 
 # Prepare volumes
-mkdir -p /minio/data
-mkdir -p /mongo/data
+mkdir -p /minio/data/
 mkdir -p /mongo/data/
 mkdir -p /egress/home/egress
 chown 1001:1001 /minio /minio/data

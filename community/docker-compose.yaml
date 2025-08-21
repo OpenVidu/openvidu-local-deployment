@@ -46,7 +46,7 @@ services:
         condition: service_completed_successfully
 
   minio:
-    image: docker.io/bitnami/minio:2025.2.7-debian-12-r0
+    image: docker.io/openvidu/minio:2025.2.7-debian-12-r0
     platform: linux/amd64
     container_name: minio
     restart: unless-stopped
@@ -66,7 +66,7 @@ services:
         condition: service_completed_successfully
 
   mongo:
-    image: docker.io/bitnami/mongodb:8.0.4
+    image: docker.io/openvidu/mongodb:8.0.4
     platform: linux/amd64
     container_name: mongo
     restart: unless-stopped

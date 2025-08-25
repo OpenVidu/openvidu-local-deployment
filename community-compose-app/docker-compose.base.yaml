@@ -1,13 +1,21 @@
 services:
 
   generate-scripts:
-    image: alpine:3.22.1
+    image: curlimages/curl:8.15.0
     entrypoint: ["/bin/sh", "-c"]
     restart: "no"
     user: root
+    volumes:
+      - scripts:/scripts
+      - config:/config
     command:
       - |
         set -e
+        # Check if /scripts and /config are empty, if not, skip script generation
+        if [ "$(ls -A /scripts)" ] && [ "$(ls -A /config)" ]; then
+          echo "/config and /scripts are not empty, skipping script generation."
+          exit 0
+        fi
         echo "Generating scripts..."
         echo "$${SETUP_SCRIPT}" > /scripts/setup.sh
         echo "$${UTILS_SCRIPT}" > /scripts/utils.sh
@@ -15,10 +23,11 @@ services:
         echo "$${CADDY_ENTRYPOINT}" > /scripts/entrypoint_caddy.sh
         echo "$${OPENVIDU_ENTRYPOINT}" > /scripts/entrypoint_openvidu.sh
         echo "$${OPENVIDU_MEET_ENTRYPOINT}" > /scripts/entrypoint_openvidu_meet.sh
-        echo "$${OPENVIDU_CONFIG}" > /config/livekit.yaml
-        echo "$${INGRESS_CONFIG}" > /config/ingress.yaml
-        echo "$${EGRESS_CONFIG}" > /config/egress.yaml
-        echo "Generating configuration files..."
+        echo "Downloading default config files..."
+        base_url="https://raw.githubusercontent.com/OpenVidu/openvidu-local-deployment/refs/heads/$$OPENVIDU_LOCAL_DEPLOYMENT_BRANCH/community"
+        curl -sS -o /config/livekit.yaml "$${base_url}/livekit.yaml"
+        curl -sS -o /config/ingress.yaml "$${base_url}/ingress.yaml"
+        curl -sS -o /config/egress.yaml "$${base_url}/egress.yaml"
         echo "Setting permissions..."
         chmod +x /scripts/setup.sh
         chmod +x /scripts/utils.sh
@@ -27,6 +36,7 @@ services:
         chmod +x /scripts/entrypoint_openvidu.sh
         chmod +x /scripts/entrypoint_openvidu_meet.sh
     environment:
+      OPENVIDU_LOCAL_DEPLOYMENT_BRANCH: feature/meet-local-compose-app
       SETUP_SCRIPT: |
         #!/bin/sh
         echo "Setting up directories and permissions..."
@@ -116,119 +126,6 @@ services:
         export LIVEKIT_URL="$${URL}"
 
         /usr/local/bin/entrypoint.sh
-
-      OPENVIDU_CONFIG: |
-        # OpenVidu configuration
-        openvidu:
-            analytics:
-                enabled: true
-                interval: 10s
-                expiration: 768h # 32 days
-                mongo_url: mongodb://${MONGO_ADMIN_USERNAME:-mongoadmin}:${MONGO_ADMIN_PASSWORD:-mongoadmin}@mongo:27017/?replicaSet=rs0&readPreference=primaryPreferred
-
-        # LiveKit configuration
-        port: 7880
-        bind_addresses:
-            - ""
-        rtc:
-            tcp_port: 7881
-            port_range_start: 7900
-            port_range_end: 7999
-        redis:
-            address: redis:6379
-            username: ""
-            password: ${REDIS_PASSWORD:-redispassword}
-            db: 0
-            use_tls: false
-        turn:
-            enabled: true
-            udp_port: 3478
-            relay_range_start: 40000
-            relay_range_end: 50000
-        keys:
-            ${LIVEKIT_API_KEY:-devkey}: ${LIVEKIT_API_SECRET:-secret}
-        webhook:
-            api_key: ${LIVEKIT_API_KEY:-devkey}
-            urls:
-                - http://host.docker.internal:6080/livekit/webhook
-                - http://openvidu-meet:6080/livekit/webhook
-        ingress:
-            rtmp_base_url: rtmp://localhost:1935/rtmp
-            whip_base_url: http://localhost:8085/whip
-        logging:
-            # Logging level for the LiveKit server.
-            # Values: debug, info, warn, error.
-            # Default: info.
-            level: info
-
-            # Logging level for the Pion WebRTC engine.
-            # Values: trace, debug, info, warn, error.
-            # Default: error.
-            pion_level: warn
-      INGRESS_CONFIG: |
-        redis:
-            address: redis:6379
-            username: ""
-            password: ${REDIS_PASSWORD:-redispassword}
-            db: 0
-            use_tls: false
-        api_key: ${LIVEKIT_API_KEY:-devkey}
-        api_secret: ${LIVEKIT_API_SECRET:-secret}
-        ws_url: ws://openvidu:7880
-        rtmp_port: 1935
-        whip_port: 8085
-        http_relay_port: 9090
-        health_port: 9091
-        logging:
-            json: false
-            level: ""
-        development: false
-        rtc_config:
-            udp_port: 7895
-      EGRESS_CONFIG: |
-        redis:
-            address: redis:6379
-            username: ""
-            password: ${REDIS_PASSWORD:-redispassword}
-            db: 0
-            use_tls: false
-        api_key: ${LIVEKIT_API_KEY:-devkey}
-        api_secret: ${LIVEKIT_API_SECRET:-secret}
-        ws_url: ws://openvidu:7880
-        health_port: 9091
-
-        # Files will be moved here when uploads fail.
-        backup:
-            prefix: /home/egress/backup_storage
-
-        # Storage for recordings.
-        storage:
-            s3:
-                access_key: ${MINIO_ACCESS_KEY:-minioadmin}
-                secret: ${MINIO_SECRET_KEY:-minioadmin}
-                # Default region for minio
-                region: us-east-1
-                endpoint: http://minio:9000
-                bucket: openvidu-appdata
-                force_path_style: true
-            #azure:
-            #    account_name: your_account_name
-            #    account_key: your_account_key
-            #    container_name: openvidu-appdata
-
-        # CPU cost for each type of Egress operation.
-        cpu_cost:
-            max_cpu_utilization: 0.80
-            room_composite_cpu_cost: 0.01
-            audio_room_composite_cpu_cost: 0.01
-            web_cpu_cost: 0.01
-            audio_web_cpu_cost: 0.01
-            participant_cpu_cost: 0.01
-            track_composite_cpu_cost: 0.01
-            track_cpu_cost: 0.01
-    volumes:
-      - scripts:/scripts
-      - config:/config
 
   setup:
     image: docker.io/busybox:1.37.0

@@ -258,6 +258,7 @@ services:
     restart: on-failure
     environment:
       - MODE=local-ready-check
+      - OPENVIDU_ENVIRONMENT=local
       - USE_HTTPS=${USE_HTTPS:-false}
       - LAN_DOMAIN=${LAN_DOMAIN:-}
       - LAN_MODE=${LAN_MODE:-false}

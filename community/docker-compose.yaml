@@ -70,7 +70,7 @@ services:
         condition: service_completed_successfully
 
   mongo:
-    image: docker.io/openvidu/mongodb:8.0.9
+    image: docker.io/openvidu/mongodb:8.0.12-r0
     platform: linux/amd64
     container_name: mongo
     restart: unless-stopped
@@ -239,7 +239,7 @@ services:
     restart: on-failure
     environment:
       - MODE=local-ready-check
-      - OPENVIDU_ENVIRONMENT=local
+      - OPENVIDU_ENVIRONMENT=local-platform
       - USE_HTTPS=${USE_HTTPS:-false}
       - LAN_DOMAIN=${LAN_DOMAIN:-}
       - LAN_MODE=${LAN_MODE:-false}

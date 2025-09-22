@@ -27,6 +27,10 @@ storage:
     #    account_name: your_account_name
     #    account_key: your_account_key
     #    container_name: openvidu-appdata
+    # gcp:
+    #     credentials_json: |
+    #         your_credentials_json
+    #     bucket: openvidu-appdata
 
 # CPU cost for each type of Egress operation.
 cpu_cost:

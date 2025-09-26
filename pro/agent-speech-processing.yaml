@@ -5,7 +5,7 @@ docker_image: docker.io/openvidu/agent-speech-processing:main
 enabled: false
 
 # Maximum CPU load threshold for the agent to accept new jobs. Value between 0 and 1.
-load_threshold: 0.7
+load_threshold: 1.0
 
 # Log level for the agent [DEBUG, INFO, WARNING, ERROR, CRITICAL]
 log_level: INFO

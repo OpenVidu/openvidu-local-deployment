@@ -1,8 +1,14 @@
 # Docker image of the agent.
-docker_image: docker.io/openvidu/agent-speech-processing:3.3.0
+docker_image: docker.io/openvidu/agent-speech-processing:main
 
 # Whether to run the agent or not.
 enabled: false
+
+# Maximum CPU load threshold for the agent to accept new jobs. Value between 0 and 1.
+load_threshold: 1.0
+
+# Log level for the agent [DEBUG, INFO, WARNING, ERROR, CRITICAL]
+log_level: INFO
 
 live_captions:
   # How this agent will connect to Rooms [automatic, manual]
@@ -10,7 +16,7 @@ live_captions:
   # - manual: the agent will connect to new Rooms only when your application dictates it by using the Agent Dispatch API.
   processing: automatic
 
-  # Which speech-to-text AI provider to use [aws, azure, google, opeanai, groq, deepgram, assemblyai, fal, clova, speechmatics, gladia, sarvam]
+  # Which speech-to-text AI provider to use [aws, azure, google, openai, groq, deepgram, assemblyai, fal, clova, speechmatics, gladia, sarvam, spitch]
   # The custom configuration for the selected provider must be set below
   provider:
 
@@ -154,8 +160,8 @@ live_captions:
     detect_language: false
     # Whether to return interim (non-final) transcription results. Defaults to true. See https://developers.deepgram.com/docs/interim-results
     interim_results: true
-    # Whether to apply smart formatting to numbers, dates, etc. Defaults to true. See https://developers.deepgram.com/docs/smart-format
-    smart_format: true
+    # Whether to apply smart formatting to numbers, dates, etc. Defaults to false. See https://developers.deepgram.com/docs/smart-format
+    smart_format: false
     # When smart_format is used, ensures it does not wait for sequence to be complete before returning results. Defaults to true. See https://developers.deepgram.com/docs/smart-format#using-no-delay
     no_delay: true
     # Whether to add punctuations to the transcription. Defaults to true. Turn detector will work better with punctuations. See https://developers.deepgram.com/docs/punctuation
@@ -222,7 +228,7 @@ live_captions:
       speaker_sensitivity:
       # See https://docs.speechmatics.com/features/diarization#prefer-current-speaker
       prefer_current_speaker:
-    # Permitted puctuation marks for advanced punctuation. See https://docs.speechmatics.com/features/punctuation-settings
+    # Permitted punctuation marks for advanced punctuation. See https://docs.speechmatics.com/features/punctuation-settings
     # Commented is an example of punctuation settings
     punctuation_overrides:
       # permitted_marks: [ ".", "," ]

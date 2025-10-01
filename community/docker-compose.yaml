@@ -1,6 +1,6 @@
 services:
   caddy-proxy:
-    image: docker.io/openvidu/openvidu-caddy-local:3.3.0
+    image: docker.io/openvidu/openvidu-caddy-local:main
     platform: linux/amd64
     container_name: caddy-proxy
     restart: unless-stopped
@@ -17,6 +17,9 @@ services:
       - DASHBOARD_ADMIN_PASSWORD=${DASHBOARD_ADMIN_PASSWORD:-}
       - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY:-}
       - MINIO_SECRET_KEY=${MINIO_SECRET_KEY:-}
+      - MEET_INITIAL_ADMIN_USER=${MEET_INITIAL_ADMIN_USER:-}
+      - MEET_INITIAL_ADMIN_PASSWORD=${MEET_INITIAL_ADMIN_PASSWORD:-}
+      - MEET_INITIAL_API_KEY=${MEET_INITIAL_API_KEY:-}
     volumes:
       - ./custom-layout:/var/www/custom-layout
     ports:
@@ -24,6 +27,7 @@ services:
       - 6443:6443
       - 7443:7443
       - 7880:7880
+      - 9443:9443
     depends_on:
       setup:
         condition: service_completed_successfully
@@ -66,7 +70,7 @@ services:
         condition: service_completed_successfully
 
   mongo:
-    image: docker.io/openvidu/mongodb:8.0.9
+    image: docker.io/openvidu/mongodb:8.0.12-r0
     platform: linux/amd64
     container_name: mongo
     restart: unless-stopped
@@ -87,7 +91,7 @@ services:
         condition: service_completed_successfully
 
   dashboard:
-    image: docker.io/openvidu/openvidu-dashboard:3.3.0
+    image: docker.io/openvidu/openvidu-dashboard:main
     platform: linux/amd64
     container_name: dashboard
     restart: unless-stopped
@@ -101,7 +105,7 @@ services:
         condition: service_completed_successfully
 
   openvidu:
-    image: docker.io/openvidu/openvidu-server:3.3.0
+    image: docker.io/openvidu/openvidu-server:main
     platform: linux/amd64
     restart: unless-stopped
     container_name: openvidu
@@ -109,6 +113,7 @@ services:
       - host.docker.internal:host-gateway
     environment:
       - LAN_PRIVATE_IP=${LAN_PRIVATE_IP:-}
+      - LAN_MODE=${LAN_MODE:-false}
     ports:
       - 3478:3478/udp
       - 7881:7881/tcp
@@ -123,7 +128,7 @@ services:
         condition: service_completed_successfully
 
   ingress:
-    image: docker.io/openvidu/ingress:3.3.0
+    image: docker.io/openvidu/ingress:main
     platform: linux/amd64
     container_name: ingress
     restart: unless-stopped
@@ -142,7 +147,7 @@ services:
         condition: service_completed_successfully
 
   egress:
-    image: docker.io/livekit/egress:v1.9.1
+    image: docker.io/livekit/egress:v1.10.0
     platform: linux/amd64
     restart: unless-stopped
     container_name: egress
@@ -157,36 +162,45 @@ services:
       setup:
         condition: service_completed_successfully
 
-  default-app:
-    image: docker.io/openvidu/openvidu-call:3.3.0-demo
+  openvidu-meet:
+    image: docker.io/openvidu/openvidu-meet:main
     platform: linux/amd64
-    container_name: openvidu-call
+    container_name: openvidu-meet
     restart: on-failure
+    ports:
+      - 9080:6080
+    extra_hosts:
+      - host.docker.internal:host-gateway
     environment:
       - USE_HTTPS=${USE_HTTPS:-false}
       - LAN_MODE=${LAN_MODE:-false}
       - LAN_DOMAIN=${LAN_DOMAIN:-}
       - LAN_PRIVATE_IP=${LAN_PRIVATE_IP:-}
       - SERVER_PORT=6080
-      - CALL_NAME_ID=OpenViduCall-LOCAL
+      - MEET_LOG_LEVEL=${MEET_LOG_LEVEL:-info}
+      - MEET_NAME_ID=openviduMeet-LOCAL
+      - MEET_INITIAL_API_KEY=${MEET_INITIAL_API_KEY:-meet-api-key}
+      - MEET_INITIAL_ADMIN_USER=${MEET_INITIAL_ADMIN_USER:-admin}
+      - MEET_INITIAL_ADMIN_PASSWORD=${MEET_INITIAL_ADMIN_PASSWORD:-admin}
+      - MEET_COOKIE_SECURE=false
+      - MEET_INITIAL_WEBHOOK_ENABLED=true
+      - MEET_INITIAL_WEBHOOK_URL=${MEET_INITIAL_WEBHOOK_URL:-http://host.docker.internal:6080/webhook}
       - LIVEKIT_URL_PRIVATE=ws://openvidu:7880/
       - LIVEKIT_API_KEY=${LIVEKIT_API_KEY}
       - LIVEKIT_API_SECRET=${LIVEKIT_API_SECRET}
-      - CALL_PRIVATE_ACCESS=${CALL_PRIVATE_ACCESS:-false}
-      - CALL_USER=${CALL_USER:-}
-      - CALL_SECRET=${CALL_SECRET:-}
-      - CALL_RECORDING=${CALL_RECORDING:-}
-      - CALL_ADMIN_USER=${CALL_ADMIN_USER:-admin}
-      - CALL_ADMIN_SECRET=${CALL_ADMIN_SECRET:-admin}
-      - CALL_LOG_LEVEL=${CALL_LOG_LEVEL:-info}
-      - CALL_S3_BUCKET=${CALL_S3_BUCKET:-openvidu-appdata}
-      - CALL_S3_SERVICE_ENDPOINT=${CALL_S3_SERVICE_ENDPOINT:-http://minio:9000}
-      - CALL_S3_ACCESS_KEY=${MINIO_ACCESS_KEY}
-      - CALL_S3_SECRET_KEY=${MINIO_SECRET_KEY}
-      - CALL_AWS_REGION=${CALL_AWS_REGION:-us-east-1}
-      - CALL_S3_WITH_PATH_STYLE_ACCESS=${CALL_S3_WITH_PATH_STYLE_ACCESS:-true}
+      - MEET_S3_BUCKET=${MEET_S3_BUCKET:-openvidu-appdata}
+      - MEET_S3_SUBBUCKET=${MEET_S3_SUBBUCKET:-openvidu-meet}
+      - MEET_S3_SERVICE_ENDPOINT=${MEET_S3_SERVICE_ENDPOINT:-http://minio:9000}
+      - MEET_S3_ACCESS_KEY=${MINIO_ACCESS_KEY}
+      - MEET_S3_SECRET_KEY=${MINIO_SECRET_KEY}
+      - MEET_AWS_REGION=${MEET_AWS_REGION:-us-east-1}
+      - MEET_S3_WITH_PATH_STYLE_ACCESS=${MEET_S3_WITH_PATH_STYLE_ACCESS:-true}
+      - MEET_REDIS_HOST=redis
+      - MEET_REDIS_PORT=6379
+      - MEET_REDIS_PASSWORD=${REDIS_PASSWORD:-}
+      - MEET_REDIS_DB=0
     volumes:
-      - ./scripts/entrypoint_default_app.sh:/scripts/entrypoint.sh
+      - ./scripts/entrypoint_openvidu_meet.sh:/scripts/entrypoint.sh
       - ./scripts/utils.sh:/scripts/utils.sh
     entrypoint: /bin/sh /scripts/entrypoint.sh
     depends_on:
@@ -194,7 +208,7 @@ services:
         condition: service_completed_successfully
 
   operator:
-    image: docker.io/openvidu/openvidu-operator:3.3.0
+    image: docker.io/openvidu/openvidu-operator:main
     platform: linux/amd64
     container_name: operator
     restart: unless-stopped
@@ -219,21 +233,26 @@ services:
         condition: service_completed_successfully
 
   ready-check:
-    image: docker.io/curlimages/curl:8.13.0
+    image: docker.io/openvidu/openvidu-operator:main
     platform: linux/amd64
     container_name: ready-check
     restart: on-failure
     environment:
+      - MODE=local-ready-check
+      - OPENVIDU_ENVIRONMENT=local-platform
       - USE_HTTPS=${USE_HTTPS:-false}
       - LAN_DOMAIN=${LAN_DOMAIN:-}
       - LAN_MODE=${LAN_MODE:-false}
       - LAN_PRIVATE_IP=${LAN_PRIVATE_IP:-}
-      - LIVEKIT_API_KEY=${LIVEKIT_API_KEY:-}
-      - LIVEKIT_API_SECRET=${LIVEKIT_API_SECRET:-}
       - DASHBOARD_ADMIN_USERNAME=${DASHBOARD_ADMIN_USERNAME:-}
       - DASHBOARD_ADMIN_PASSWORD=${DASHBOARD_ADMIN_PASSWORD:-}
       - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY:-}
       - MINIO_SECRET_KEY=${MINIO_SECRET_KEY:-}
+      - LIVEKIT_API_KEY=${LIVEKIT_API_KEY:-}
+      - LIVEKIT_API_SECRET=${LIVEKIT_API_SECRET:-}
+      - MEET_INITIAL_ADMIN_USER=${MEET_INITIAL_ADMIN_USER:-}
+      - MEET_INITIAL_ADMIN_PASSWORD=${MEET_INITIAL_ADMIN_PASSWORD:-}
+      - MEET_INITIAL_API_KEY=${MEET_INITIAL_API_KEY:-}
     depends_on:
       - openvidu
       - ingress
@@ -241,10 +260,6 @@ services:
       - dashboard
       - minio
       - mongo
-    volumes:
-      - ./scripts/ready-check.sh:/scripts/ready-check.sh
-      - ./scripts/utils.sh:/scripts/utils.sh
-    command: /bin/sh /scripts/ready-check.sh
 
   setup:
     image: docker.io/busybox:1.37.0

@@ -1,6 +1,6 @@
 services:
   caddy-proxy:
-    image: docker.io/openvidu/openvidu-caddy-local:main
+    image: docker.io/openvidu/openvidu-caddy-local:3.4.1
     platform: linux/amd64
     container_name: caddy-proxy
     restart: unless-stopped
@@ -91,7 +91,7 @@ services:
         condition: service_completed_successfully
 
   dashboard:
-    image: docker.io/openvidu/openvidu-dashboard:main
+    image: docker.io/openvidu/openvidu-dashboard:3.4.1
     platform: linux/amd64
     container_name: dashboard
     restart: unless-stopped
@@ -105,7 +105,7 @@ services:
         condition: service_completed_successfully
 
   openvidu:
-    image: docker.io/openvidu/openvidu-server:main
+    image: docker.io/openvidu/openvidu-server:3.4.1
     platform: linux/amd64
     restart: unless-stopped
     container_name: openvidu
@@ -128,7 +128,7 @@ services:
         condition: service_completed_successfully
 
   ingress:
-    image: docker.io/openvidu/ingress:main
+    image: docker.io/openvidu/ingress:3.4.1
     platform: linux/amd64
     container_name: ingress
     restart: unless-stopped
@@ -163,7 +163,7 @@ services:
         condition: service_completed_successfully
 
   openvidu-meet:
-    image: docker.io/openvidu/openvidu-meet:main
+    image: docker.io/openvidu/openvidu-meet:3.4.1
     platform: linux/amd64
     container_name: openvidu-meet
     restart: on-failure
@@ -208,7 +208,7 @@ services:
         condition: service_completed_successfully
 
   operator:
-    image: docker.io/openvidu/openvidu-operator:main
+    image: docker.io/openvidu/openvidu-operator:3.4.1
     platform: linux/amd64
     container_name: operator
     restart: unless-stopped
@@ -233,7 +233,7 @@ services:
         condition: service_completed_successfully
 
   ready-check:
-    image: docker.io/openvidu/openvidu-operator:main
+    image: docker.io/openvidu/openvidu-operator:3.4.1
     platform: linux/amd64
     container_name: ready-check
     restart: on-failure

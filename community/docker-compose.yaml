@@ -33,7 +33,7 @@ services:
         condition: service_completed_successfully
 
   redis:
-    image: docker.io/redis:7.4.4-alpine
+    image: docker.io/redis:8.2.2-alpine
     platform: linux/amd64
     container_name: redis
     restart: unless-stopped
@@ -50,7 +50,7 @@ services:
         condition: service_completed_successfully
 
   minio:
-    image: docker.io/openvidu/minio:2025.5.24-debian-12-r1
+    image: docker.io/openvidu/minio:2025.9.7-debian-12-r3
     platform: linux/amd64
     container_name: minio
     restart: unless-stopped
@@ -61,6 +61,7 @@ services:
       - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY:-}
       - MINIO_DEFAULT_BUCKETS=openvidu-appdata
       - MINIO_CONSOLE_SUBPATH=/minio-console
+      - MINIO_BROWSER=on
       - MINIO_BROWSER_REDIRECT_URL=http://localhost:7880/minio-console
     volumes:
       - minio-data:/bitnami/minio/data
@@ -70,7 +71,7 @@ services:
         condition: service_completed_successfully
 
   mongo:
-    image: docker.io/openvidu/mongodb:8.0.12-r0
+    image: docker.io/openvidu/mongodb:8.0.15-r0
     platform: linux/amd64
     container_name: mongo
     restart: unless-stopped
@@ -147,7 +148,7 @@ services:
         condition: service_completed_successfully
 
   egress:
-    image: docker.io/livekit/egress:v1.10.0
+    image: docker.io/openvidu/egress:main
     platform: linux/amd64
     restart: unless-stopped
     container_name: egress

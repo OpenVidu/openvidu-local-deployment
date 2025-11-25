@@ -202,6 +202,7 @@ services:
       - MEET_REDIS_PORT=6379
       - MEET_REDIS_PASSWORD=${REDIS_PASSWORD:-}
       - MEET_REDIS_DB=0
+      - MEET_MONGO_URI=mongodb://${MONGO_ADMIN_USERNAME}:${MONGO_ADMIN_PASSWORD}@mongo:27017/?replicaSet=rs0&readPreference=primaryPreferred
     volumes:
       - ./scripts/entrypoint_openvidu_meet.sh:/scripts/entrypoint.sh
       - ./scripts/utils.sh:/scripts/utils.sh

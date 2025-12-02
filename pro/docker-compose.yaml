@@ -1,7 +1,6 @@
 services:
   caddy-proxy:
     image: docker.io/openvidu/openvidu-caddy-local:main
-    platform: linux/amd64
     container_name: caddy-proxy
     restart: unless-stopped
     extra_hosts:
@@ -36,7 +35,6 @@ services:
 
   redis:
     image: docker.io/redis:8.2.2-alpine
-    platform: linux/amd64
     container_name: redis
     restart: unless-stopped
     ports:
@@ -54,7 +52,6 @@ services:
 
   minio:
     image: docker.io/openvidu/minio:2025.9.7-debian-12-r3
-    platform: linux/amd64
     restart: unless-stopped
     ports:
       - 9000:9000
@@ -75,7 +72,6 @@ services:
 
   mongo:
     image: docker.io/openvidu/mongodb:8.0.15-r0
-    platform: linux/amd64
     container_name: mongo
     restart: unless-stopped
     ports:
@@ -90,14 +86,12 @@ services:
       - MONGODB_REPLICA_SET_MODE=primary
       - MONGODB_REPLICA_SET_NAME=rs0
       - MONGODB_REPLICA_SET_KEY=devreplicasetkey
-      - EXPERIMENTAL_DOCKER_DESKTOP_FORCE_QEMU=${EXPERIMENTAL_DOCKER_DESKTOP_FORCE_QEMU:-0}
     depends_on:
       setup:
         condition: service_completed_successfully
 
   dashboard:
     image: docker.io/openvidu/openvidu-dashboard:main
-    platform: linux/amd64
     container_name: dashboard
     restart: unless-stopped
     environment:
@@ -113,7 +107,6 @@ services:
 
   openvidu:
     image: docker.io/openvidu/openvidu-server-pro:main
-    platform: linux/amd64
     restart: unless-stopped
     container_name: openvidu
     extra_hosts:
@@ -139,7 +132,6 @@ services:
 
   ingress:
     image: docker.io/openvidu/ingress:main
-    platform: linux/amd64
     container_name: ingress
     restart: unless-stopped
     extra_hosts:
@@ -159,7 +151,6 @@ services:
 
   egress:
     image: docker.io/openvidu/egress:main
-    platform: linux/amd64
     restart: unless-stopped
     container_name: egress
     extra_hosts:
@@ -176,7 +167,6 @@ services:
 
   openvidu-meet:
     image: docker.io/openvidu/openvidu-meet:main
-    platform: linux/amd64
     container_name: openvidu-meet
     restart: on-failure
     ports:
@@ -223,7 +213,6 @@ services:
 
   openvidu-v2compatibility:
     image: docker.io/openvidu/openvidu-v2compatibility:main
-    platform: linux/amd64
     restart: unless-stopped
     container_name: openvidu-v2compatibility
     entrypoint: /bin/sh /scripts/entrypoint.sh
@@ -266,7 +255,6 @@ services:
 
   ready-check:
     image: docker.io/openvidu/openvidu-operator:main
-    platform: linux/amd64
     container_name: ready-check
     restart: on-failure
     volumes:
@@ -298,7 +286,6 @@ services:
 
   operator:
     image: docker.io/openvidu/openvidu-operator:main
-    platform: linux/amd64
     container_name: operator
     restart: unless-stopped
     volumes:
@@ -307,7 +294,6 @@ services:
       - ./:/deployment
       - /etc/localtime:/etc/localtime:ro
     environment:
-      - PLATFORM=linux/amd64
       - MODE=agent-manager-local
       - DEPLOYMENT_FILES_DIR=/deployment
       - AGENTS_CONFIG_DIR=/agents-config
@@ -323,7 +309,6 @@ services:
         condition: service_completed_successfully
   setup:
     image: docker.io/busybox:1.37.0
-    platform: linux/amd64
     container_name: setup
     restart: "no"
     volumes:

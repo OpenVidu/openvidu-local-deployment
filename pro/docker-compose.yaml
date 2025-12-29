@@ -1,7 +1,6 @@
 services:
   caddy-proxy:
-    image: docker.io/openvidu/openvidu-caddy-local:3.4.1
-    platform: linux/amd64
+    image: docker.io/openvidu/openvidu-caddy-local:3.5.0
     container_name: caddy-proxy
     restart: unless-stopped
     extra_hosts:
@@ -23,6 +22,7 @@ services:
       - MEET_INITIAL_API_KEY=${MEET_INITIAL_API_KEY:-}
     volumes:
       - ./custom-layout:/var/www/custom-layout
+      - /etc/localtime:/etc/localtime:ro
     ports:
       - 5443:5443
       - 6443:6443
@@ -34,14 +34,14 @@ services:
         condition: service_completed_successfully
 
   redis:
-    image: docker.io/redis:7.4.4-alpine
-    platform: linux/amd64
+    image: docker.io/redis:8.2.2-alpine
     container_name: redis
     restart: unless-stopped
     ports:
       - 6379:6379
     volumes:
       - redis:/data
+      - /etc/localtime:/etc/localtime:ro
     command: >
       redis-server
       --bind 0.0.0.0
@@ -51,8 +51,7 @@ services:
         condition: service_completed_successfully
 
   minio:
-    image: docker.io/openvidu/minio:2025.5.24-debian-12-r1
-    platform: linux/amd64
+    image: docker.io/openvidu/minio:2025.9.7-debian-12-r3
     restart: unless-stopped
     ports:
       - 9000:9000
@@ -61,23 +60,25 @@ services:
       - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY:-}
       - MINIO_DEFAULT_BUCKETS=openvidu-appdata
       - MINIO_CONSOLE_SUBPATH=/minio-console
+      - MINIO_BROWSER=on
       - MINIO_BROWSER_REDIRECT_URL=http://localhost:7880/minio-console
     volumes:
       - minio-data:/bitnami/minio/data
       - minio-certs:/certs
+      - /etc/localtime:/etc/localtime:ro
     depends_on:
       setup:
         condition: service_completed_successfully
 
   mongo:
-    image: docker.io/openvidu/mongodb:8.0.12-r0
-    platform: linux/amd64
+    image: docker.io/openvidu/mongodb:8.0.15-r0
     container_name: mongo
     restart: unless-stopped
     ports:
       - 27017:27017
     volumes:
       - mongo-data:/bitnami/mongodb
+      - /etc/localtime:/etc/localtime:ro
     environment:
       - MONGODB_ROOT_USER=${MONGO_ADMIN_USERNAME:-}
       - MONGODB_ROOT_PASSWORD=${MONGO_ADMIN_PASSWORD:-}
@@ -85,14 +86,12 @@ services:
       - MONGODB_REPLICA_SET_MODE=primary
       - MONGODB_REPLICA_SET_NAME=rs0
       - MONGODB_REPLICA_SET_KEY=devreplicasetkey
-      - EXPERIMENTAL_DOCKER_DESKTOP_FORCE_QEMU=${EXPERIMENTAL_DOCKER_DESKTOP_FORCE_QEMU:-0}
     depends_on:
       setup:
         condition: service_completed_successfully
 
   dashboard:
-    image: docker.io/openvidu/openvidu-dashboard:3.4.1
-    platform: linux/amd64
+    image: docker.io/openvidu/openvidu-dashboard:3.5.0
     container_name: dashboard
     restart: unless-stopped
     environment:
@@ -100,13 +99,14 @@ services:
       - ADMIN_USERNAME=${DASHBOARD_ADMIN_USERNAME:-}
       - ADMIN_PASSWORD=${DASHBOARD_ADMIN_PASSWORD:-}
       - DATABASE_URL=mongodb://${MONGO_ADMIN_USERNAME}:${MONGO_ADMIN_PASSWORD}@mongo:27017/?replicaSet=rs0&readPreference=primaryPreferred
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
     depends_on:
       setup:
         condition: service_completed_successfully
 
   openvidu:
-    image: docker.io/openvidu/openvidu-server-pro:3.4.1
-    platform: linux/amd64
+    image: docker.io/openvidu/openvidu-server-pro:3.5.0
     restart: unless-stopped
     container_name: openvidu
     extra_hosts:
@@ -125,13 +125,13 @@ services:
     volumes:
       - ./livekit.yaml:/etc/livekit.yaml
       - ./scripts/entrypoint_openvidu.sh:/scripts/entrypoint.sh
+      - /etc/localtime:/etc/localtime:ro
     depends_on:
       setup:
         condition: service_completed_successfully
 
   ingress:
-    image: docker.io/openvidu/ingress:3.4.1
-    platform: linux/amd64
+    image: docker.io/openvidu/ingress:3.5.0
     container_name: ingress
     restart: unless-stopped
     extra_hosts:
@@ -144,13 +144,13 @@ services:
       - INGRESS_CONFIG_FILE=/etc/ingress.yaml
     volumes:
       - ./ingress.yaml:/etc/ingress.yaml
+      - /etc/localtime:/etc/localtime:ro
     depends_on:
       setup:
         condition: service_completed_successfully
 
   egress:
-    image: docker.io/livekit/egress:v1.10.0
-    platform: linux/amd64
+    image: docker.io/openvidu/egress:3.5.0
     restart: unless-stopped
     container_name: egress
     extra_hosts:
@@ -160,13 +160,13 @@ services:
     volumes:
       - ./egress.yaml:/etc/egress.yaml
       - egress-data:/home/egress
+      - /etc/localtime:/etc/localtime:ro
     depends_on:
       setup:
         condition: service_completed_successfully
 
   openvidu-meet:
-    image: docker.io/openvidu/openvidu-meet:3.4.1
-    platform: linux/amd64
+    image: docker.io/openvidu/openvidu-meet:3.5.0
     container_name: openvidu-meet
     restart: on-failure
     ports:
@@ -201,17 +201,18 @@ services:
       - MEET_REDIS_PORT=6379
       - MEET_REDIS_PASSWORD=${REDIS_PASSWORD:-}
       - MEET_REDIS_DB=0
+      - MEET_MONGO_URI=mongodb://${MONGO_ADMIN_USERNAME}:${MONGO_ADMIN_PASSWORD}@mongo:27017/?replicaSet=rs0&readPreference=primaryPreferred
     volumes:
       - ./scripts/entrypoint_openvidu_meet.sh:/scripts/entrypoint.sh
       - ./scripts/utils.sh:/scripts/utils.sh
+      - /etc/localtime:/etc/localtime:ro
     entrypoint: /bin/sh /scripts/entrypoint.sh
     depends_on:
       setup:
         condition: service_completed_successfully
 
   openvidu-v2compatibility:
-    image: docker.io/openvidu/openvidu-v2compatibility:3.4.1
-    platform: linux/amd64
+    image: docker.io/openvidu/openvidu-v2compatibility:3.5.0
     restart: unless-stopped
     container_name: openvidu-v2compatibility
     entrypoint: /bin/sh /scripts/entrypoint.sh
@@ -247,15 +248,17 @@ services:
       - ./recordings:/opt/openvidu/recordings
       - ./scripts/entrypoint_v2comp.sh:/scripts/entrypoint.sh
       - ./scripts/utils.sh:/scripts/utils.sh
+      - /etc/localtime:/etc/localtime:ro
     depends_on:
       setup:
         condition: service_completed_successfully
 
   ready-check:
-    image: docker.io/openvidu/openvidu-operator:3.4.1
-    platform: linux/amd64
+    image: docker.io/openvidu/openvidu-operator:3.5.0
     container_name: ready-check
     restart: on-failure
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
     environment:
       - MODE=local-ready-check
       - OPENVIDU_ENVIRONMENT=local-platform
@@ -282,16 +285,15 @@ services:
       - mongo
 
   operator:
-    image: docker.io/openvidu/openvidu-operator:3.4.1
-    platform: linux/amd64
+    image: docker.io/openvidu/openvidu-operator:3.5.0
     container_name: operator
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - agents-config:/agents-config
       - ./:/deployment
+      - /etc/localtime:/etc/localtime:ro
     environment:
-      - PLATFORM=linux/amd64
       - MODE=agent-manager-local
       - DEPLOYMENT_FILES_DIR=/deployment
       - AGENTS_CONFIG_DIR=/agents-config
@@ -307,7 +309,6 @@ services:
         condition: service_completed_successfully
   setup:
     image: docker.io/busybox:1.37.0
-    platform: linux/amd64
     container_name: setup
     restart: "no"
     volumes:
@@ -315,6 +316,7 @@ services:
       - mongo-data:/mongo
       - egress-data:/egress
       - ./scripts/setup.sh:/scripts/setup.sh
+      - /etc/localtime:/etc/localtime:ro
     environment:
       - USE_HTTPS=${USE_HTTPS:-false}
       - LAN_MODE=${LAN_MODE:-false}

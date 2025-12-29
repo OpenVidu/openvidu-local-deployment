@@ -1,5 +1,5 @@
 # Docker image of the agent.
-docker_image: docker.io/openvidu/agent-speech-processing:3.4.1
+docker_image: docker.io/openvidu/agent-speech-processing:3.5.0
 
 # Whether to run the agent or not.
 enabled: false
@@ -16,7 +16,7 @@ live_captions:
   # - manual: the agent will connect to new Rooms only when your application dictates it by using the Agent Dispatch API.
   processing: automatic
 
-  # Which speech-to-text AI provider to use [aws, azure, google, openai, groq, deepgram, assemblyai, fal, clova, speechmatics, gladia, sarvam, spitch]
+  # Which speech-to-text AI provider to use [aws, azure, google, openai, azure_openai, groq, deepgram, assemblyai, fal, clova, speechmatics, gladia, sarvam, mistralai, cartesia, soniox]
   # The custom configuration for the selected provider must be set below
   provider:
 
@@ -63,6 +63,10 @@ live_captions:
     # Removes profanity (swearing), or replaces letters of profane words with stars. Valid values: Masked | Removed | Raw
     # See https://learn.microsoft.com/en-us/azure/ai-services/translator/profanity-filtering
     profanity:
+    # List of words or phrases to boost recognition accuracy. Azure will give higher priority to these phrases during recognition.
+    phrase_list:
+    # Controls punctuation behavior. If True, enables explicit punctuation mode where punctuation marks are added explicitly. If False (default), uses Azure's default punctuation behavior.
+    explicit_punctuation: 
 
   azure_openai:
     # Credentials for Azure OpenAI APIs. See https://learn.microsoft.com/en-us/azure/api-management/api-management-authenticate-authorize-azure-openai
@@ -82,6 +86,8 @@ live_captions:
     project:
     # The language code to use for transcription (e.g., "en" for English).
     language:
+    # Whether to automatically detect the language.
+    detect_language:
     # ID of the model to use for speech-to-text.
     model:
     # Initial prompt to guide the transcription.
@@ -135,6 +141,8 @@ live_captions:
     # The language of the input audio. Supplying the input language in ISO-639-1 format
     # (https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) will improve accuracy and latency.
     language:
+    # Whether to automatically detect the language.
+    detect_language:
     # Optional text prompt to guide the transcription. Only supported for whisper-1.
     prompt:
 
@@ -146,8 +154,12 @@ live_captions:
     # The language of the input audio. Supplying the input language in ISO-639-1 format
     # (https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) will improve accuracy and latency.
     language:
+    # Whether to automatically detect the language.
+    detect_language:
     # Prompt to guide the model's style or specify how to spell unfamiliar words. 224 tokens max.
     prompt:
+    # Base URL for the Groq API. By default "https://api.groq.com/openai/v1"
+    base_url:
 
   deepgram:
     # See https://console.deepgram.com/
@@ -156,25 +168,27 @@ live_captions:
     model:
     # See https://developers.deepgram.com/reference/speech-to-text-api/listen-streaming#request.query.language
     language:
-    # Whether to enable automatic language detection. Defaults to false. See https://developers.deepgram.com/docs/language-detection
+    # Whether to enable automatic language detection. See https://developers.deepgram.com/docs/language-detection
     detect_language: false
-    # Whether to return interim (non-final) transcription results. Defaults to true. See https://developers.deepgram.com/docs/interim-results
+    # Whether to return interim (non-final) transcription results. See https://developers.deepgram.com/docs/interim-results
     interim_results: true
-    # Whether to apply smart formatting to numbers, dates, etc. Defaults to false. See https://developers.deepgram.com/docs/smart-format
+    # Whether to apply smart formatting to numbers, dates, etc. See https://developers.deepgram.com/docs/smart-format
     smart_format: false
-    # When smart_format is used, ensures it does not wait for sequence to be complete before returning results. Defaults to true. See https://developers.deepgram.com/docs/smart-format#using-no-delay
+    # When smart_format is used, ensures it does not wait for sequence to be complete before returning results. See https://developers.deepgram.com/docs/smart-format#using-no-delay
     no_delay: true
-    # Whether to add punctuations to the transcription. Defaults to true. Turn detector will work better with punctuations. See https://developers.deepgram.com/docs/punctuation
+    # Whether to add punctuations to the transcription. Turn detector will work better with punctuations. See https://developers.deepgram.com/docs/punctuation
     punctuate: true
-    # Whether to include filler words (um, uh, etc.) in transcription. Defaults to true. See https://developers.deepgram.com/docs/filler-words
+    # Whether to include filler words (um, uh, etc.) in transcription. See https://developers.deepgram.com/docs/filler-words
     filler_words: true
-    # Whether to filter profanity from the transcription. Defaults to false. See https://developers.deepgram.com/docs/profanity-filter
+    # Whether to filter profanity from the transcription. See https://developers.deepgram.com/docs/profanity-filter
     profanity_filter: false
-    # List of tuples containing keywords and their boost values for improved recognition. Each tuple should be (keyword: str, boost: float). Defaults to None. keywords does not work with Nova-3 models. Use keyterms instead.
+    # Whether to transcribe numbers as numerals. See https://developers.deepgram.com/docs/numerals
+    numerals: false
+    # List of tuples containing keywords and their boost values for improved recognition. Each tuple should be (keyword: str, boost: float). keywords does not work with Nova-3 models. Use keyterms instead.
     # keywords:
     #   - [OpenVidu, 1.5]
     #   - [WebRTC, 1]
-    # List of key terms to improve recognition accuracy. Defaults to None. keyterms is supported by Nova-3 models.
+    # List of key terms to improve recognition accuracy. keyterms is supported by Nova-3 models.
     # Commented below is an example
     keyterms:
       # - "OpenVidu"
@@ -183,8 +197,18 @@ live_captions:
   assemblyai:
     # API key for AssemblyAI. See https://www.assemblyai.com/dashboard/api-keys
     api_key:
+    # The confidence threshold (0.0 to 1.0) to use when determining if the end of a turn has been reached.
+    end_of_turn_confidence_threshold:
+    # The minimum amount of silence in milliseconds required to detect end of turn when confident.
+    min_end_of_turn_silence_when_confident:
+    # The maximum amount of silence in milliseconds allowed in a turn before end of turn is triggered.
+    max_turn_silence:
     # Whether to return formatted final transcripts (proper punctuation, letter casing...). If enabled, formatted final transcripts are emitted shortly following an end-of-turn detection.
     format_turns: true
+    # List of keyterms to improve recognition accuracy for specific words and phrases.
+    keyterms_prompt:
+      # - "OpenVidu"
+      # - "WebRTC"
 
   fal:
     # API key for fal. See https://fal.ai/dashboard/keys
@@ -208,12 +232,14 @@ live_captions:
   speechmatics:
     # API key for Speechmatics. See https://portal.speechmatics.com/manage-access/
     api_key:
-    # ISO 639-1 language code. All languages are global and can understand different dialects/accents. To see the list of all supported languages, see https://docs.speechmatics.com/introduction/supported-languages
+    # ISO 639-1 language code. All languages are global and can understand different dialects/accents. To see the list of all supported languages, see https://docs.speechmatics.com/speech-to-text/languages#transcription-languages
     language:
-    # Operating point to use for the transcription per required accuracy & complexity. To learn more, see https://docs.speechmatics.com/features/accuracy-language-packs#accuracy
+    # Operating point to use for the transcription per required accuracy & complexity. To learn more, see https://docs.speechmatics.com/speech-to-text/languages#operating-points
     operating_point:
-    # Partial transcripts allow you to receive preliminary transcriptions and update as more context is available until the higher-accuracy final transcript is returned. Partials are returned faster but without any post-processing such as formatting. See https://docs.speechmatics.com/features/realtime-latency#partial-transcripts
+    # Partial transcripts allow you to receive preliminary transcriptions and update as more context is available until the higher-accuracy final transcript is returned. Partials are returned faster but without any post-processing such as formatting. See https://docs.speechmatics.com/speech-to-text/realtime/output#partial-transcripts
     enable_partials:
+    # Enable speaker diarization. When enabled, the STT engine will determine and attribute words to unique speakers. The speaker_sensitivity parameter can be used to adjust the sensitivity of diarization
+    enable_diarization:
     # RFC-5646 language code to make spelling rules more consistent in the transcription output. See https://docs.speechmatics.com/features/word-tagging#output-locale
     output_locale:
     # The delay in seconds between the end of a spoken word and returning the final transcript results. See https://docs.speechmatics.com/features/realtime-latency#configuration-example
@@ -255,6 +281,10 @@ live_captions:
     languages:
     # Whether to allow switching between languages during recognition. Defaults to True
     code_switching:
+    # https://docs.gladia.io/api-reference/v2/live/init#body-pre-processing-audio-enhancer
+    pre_processing_audio_enhancer:
+    # https://docs.gladia.io/api-reference/v2/live/init#body-pre-processing-speech-threshold
+    pre_processing_speech_threshold:
 
   sarvam:
     # API key for Sarvam. See https://dashboard.sarvam.ai/key-management
@@ -263,3 +293,29 @@ live_captions:
     language:
     # The Sarvam STT model to use. See https://docs.sarvam.ai/api-reference-docs/speech-to-text/transcribe#request.body.model.model
     model:
+
+  mistralai:
+    # API key for Mistral AI. See https://console.mistral.ai/api-keys
+    api_key:
+    # Name of the Voxtral STT model to use. Default to voxtral-mini-latest. See https://docs.mistral.ai/capabilities/audio/
+    model:
+    # The language code to use for transcription (e.g., "en" for English)
+    language:
+
+  cartesia:
+    # API key for Cartesia. See https://play.cartesia.ai/keys
+    api_key:
+    # The Cartesia STT model to use
+    model:
+    # The language code to use for transcription (e.g., "en" for English)
+    language:
+
+  soniox:
+    # API key for Soniox. See https://console.soniox.com/
+    api_key:
+    # Set language hints when possible to significantly improve accuracy. See: https://soniox.com/docs/stt/concepts/language-hints
+    language_hints:
+      # - "en"
+      # - "es"
+    # Set context to improve recognition of difficult and rare words. Context is a string and can include words, phrases, sentences, or summaries (limit: 10K chars). See https://soniox.com/docs/stt/concepts/context
+    context:

@@ -342,6 +342,12 @@ live_captions:
     # Set to false for locally hosted Riva NIM services without SSL.
     use_ssl:
 
+  spitch:
+    # API key for Spitch. See https://docs.spitch.app/keys
+    api_key:
+    # Language short code for the generated speech. For supported values, see https://docs.spitch.app/concepts/languages
+    language:
+
   vosk:
     # Vosk language model. This provider requires docker_image "docker.io/openvidu/agent-speech-processing-vosk"
     # Below is the list of pre-installed models in the container (available at https://alphacephei.com/vosk/models):
@@ -365,3 +371,29 @@ live_captions:
     sample_rate:
     # Whether to return interim/partial results during recognition. Default is true.
     partial_results:
+    # Whether to override Vosk's built-in Voice Activity Detection (VAD) with Silero's VAD. Default is false.
+    use_silero_vad: false
+
+  sherpa:
+    # sherpa streaming model. This provider requires docker_image "docker.io/openvidu/agent-speech-processing-sherpa"
+    # Below is the list of pre-installed models in the container (available at https://github.com/k2-fsa/sherpa-onnx/releases/tag/asr-models):
+    # - sherpa-streaming-zipformer-en-kroko-2025-08-06 (English)
+    # - sherpa-streaming-zipformer-es-kroko-2025-08-06 (Spanish)
+    # - sherpa-streaming-zipformer-de-kroko-2025-08-06 (German)
+    # - sherpa-streaming-zipformer-fr-kroko-2025-08-06 (French)
+    # - sherpa-streaming-zipformer-ar_en_id_ja_ru_th_vi_zh-2025-02-10 (Multilingual: Arabic, English, Indonesian, Japanese, Russian, Thai, Vietnamese, Chinese)
+    model: sherpa-streaming-zipformer-en-kroko-2025-08-06
+    # Language code for reference. Auto-detected from model name if not set.
+    language:
+    # Audio sample rate in Hz. Default is 16000.
+    sample_rate:
+    # Whether to return interim/partial results during recognition. Default is true.
+    partial_results:
+    # Number of threads for ONNX Runtime. Default is 2.
+    num_threads:
+    # Recognizer type ("transducer", "paraformer", "zipformer_ctc", "nemo_ctc", "t_one_ctc"). Auto-detected from model name if not set.
+    recognizer_type:
+    # Decoding method ("greedy_search", "modified_beam_search"). Default is "greedy_search".
+    decoding_method:
+    # Whether to override sherpa's built-in Voice Activity Detection (VAD) with Silero's VAD. Default is false.
+    use_silero_vad: false

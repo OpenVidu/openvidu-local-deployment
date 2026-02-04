@@ -377,12 +377,12 @@ live_captions:
   sherpa:
     # sherpa streaming model. This provider requires docker_image "docker.io/openvidu/agent-speech-processing-sherpa"
     # Below is the list of pre-installed models in the container (available at https://github.com/k2-fsa/sherpa-onnx/releases/tag/asr-models):
-    # - sherpa-streaming-zipformer-en-kroko-2025-08-06 (English)
-    # - sherpa-streaming-zipformer-es-kroko-2025-08-06 (Spanish)
-    # - sherpa-streaming-zipformer-de-kroko-2025-08-06 (German)
-    # - sherpa-streaming-zipformer-fr-kroko-2025-08-06 (French)
-    # - sherpa-streaming-zipformer-ar_en_id_ja_ru_th_vi_zh-2025-02-10 (Multilingual: Arabic, English, Indonesian, Japanese, Russian, Thai, Vietnamese, Chinese)
-    model: sherpa-streaming-zipformer-en-kroko-2025-08-06
+    # - sherpa-onnx-streaming-zipformer-en-kroko-2025-08-06 (English)
+    # - sherpa-onnx-streaming-zipformer-es-kroko-2025-08-06 (Spanish)
+    # - sherpa-onnx-streaming-zipformer-de-kroko-2025-08-06 (German)
+    # - sherpa-onnx-streaming-zipformer-fr-kroko-2025-08-06 (French)
+    # - sherpa-onnx-streaming-zipformer-ar_en_id_ja_ru_th_vi_zh-2025-02-10 (Multilingual: Arabic, English, Indonesian, Japanese, Russian, Thai, Vietnamese, Chinese)
+    model: sherpa-onnx-streaming-zipformer-en-kroko-2025-08-06
     # Language code for reference. Auto-detected from model name if not set.
     language:
     # Audio sample rate in Hz. Default is 16000.

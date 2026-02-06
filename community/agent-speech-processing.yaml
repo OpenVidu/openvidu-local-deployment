@@ -7,7 +7,7 @@ enabled: false
 # Maximum CPU load threshold for the agent to accept new jobs. Value between 0 and 1.
 load_threshold: 1.0
 
-# Log level for the agent [DEBUG, INFO, WARNING, ERROR, CRITICAL]
+# Log level for the agent [DEBUG, INFO, WARN, ERROR, CRITICAL]
 log_level: INFO
 
 live_captions:
@@ -16,7 +16,7 @@ live_captions:
   # - manual: the agent will connect to new Rooms only when your application dictates it by using the Agent Dispatch API.
   processing: automatic
 
-  # Which speech-to-text AI provider to use [aws, azure, google, openai, azure_openai, groq, deepgram, assemblyai, fal, clova, speechmatics, gladia, sarvam, mistralai, cartesia, soniox, nvidia, vosk]
+  # Which speech-to-text AI provider to use [aws, azure, google, openai, azure_openai, groq, deepgram, assemblyai, fal, clova, speechmatics, gladia, sarvam, mistralai, cartesia, soniox, nvidia, elevenlabs, simplismart, vosk, sherpa]
   # The custom configuration for the selected provider must be set below
   provider:
 
@@ -347,6 +347,41 @@ live_captions:
     api_key:
     # Language short code for the generated speech. For supported values, see https://docs.spitch.app/concepts/languages
     language:
+
+  elevenlabs:
+    # API key for ElevenLabs. See https://elevenlabs.io/app/settings/api-keys
+    api_key:
+    # The ElevenLabs STT model to use. Valid values are ["scribe_v1", "scribe_v2", "scribe_v2_realtime"]. See https://elevenlabs.io/docs/overview/models#models-overview
+    model_id:
+    # An ISO-639-1 or ISO-639-3 language_code corresponding to the language of the audio file. Can sometimes improve transcription performance if known beforehand. Defaults to null, in this case the language is predicted automatically
+    language_code:
+    # Custom base URL for the API. Optional.
+    base_url:
+    # Audio sample rate in Hz. Default is 16000.
+    sample_rate:
+    # Whether to tag audio events like (laughter), (footsteps), etc. in the transcription. Only supported for Scribe v1 model. Default is True
+    tag_audio_events:
+    # Whether to include word-level timestamps in the transcription. Default is false.
+    include_timestamps:
+
+  simplismart:
+    # API key for SimpliSmart. See https://docs.simplismart.ai/model-suite/settings/api-keys
+    api_key:
+    # Model identifier for the backend STT model. One of ["openai/whisper-large-v2", "openai/whisper-large-v3", "openai/whisper-large-v3-turbo"]
+    # Default is "openai/whisper-large-v3-turbo"
+    model:
+    # Language code for transcription (default: "en"). See https://docs.simplismart.ai/get-started/playground/transcription-models#supported-languages-with-their-codes
+    language:
+    # Operation to perform. "transcribe" converts speech to text in the original language, "translate" translates into English. Default is "transcribe".
+    task:
+    # If true, disables timestamp generation in transcripts. Default is true
+    without_timestamps:
+    # Minimum duration (ms) for a valid speech segment. Default is 0
+    min_speech_duration_ms:
+    # Decoding temperature (affects randomness). Default is 0.0
+    temperature:
+    # Whether to permit multilingual recognition. Default is false
+    multilingual:
 
   vosk:
     # Vosk language model. This provider requires docker_image "docker.io/openvidu/agent-speech-processing-vosk"

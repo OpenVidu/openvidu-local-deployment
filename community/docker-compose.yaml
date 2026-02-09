@@ -16,10 +16,9 @@ services:
       - DASHBOARD_ADMIN_PASSWORD=${DASHBOARD_ADMIN_PASSWORD:-}
       - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY:-}
       - MINIO_SECRET_KEY=${MINIO_SECRET_KEY:-}
-      - MEET_INITIAL_ADMIN_USER=${MEET_INITIAL_ADMIN_USER:-}
-      - MEET_INITIAL_ADMIN_PASSWORD=${MEET_INITIAL_ADMIN_PASSWORD:-}
-      - MEET_INITIAL_API_KEY=${MEET_INITIAL_API_KEY:-}
       - MEET_BASE_PATH=${MEET_BASE_PATH:-/meet}
+    env_file:
+      - ./meet.env
     volumes:
       - ./custom-layout:/var/www/custom-layout
       - /etc/localtime:/etc/localtime:ro
@@ -237,9 +236,8 @@ services:
       - MINIO_SECRET_KEY=${MINIO_SECRET_KEY:-}
       - LIVEKIT_API_KEY=${LIVEKIT_API_KEY:-}
       - LIVEKIT_API_SECRET=${LIVEKIT_API_SECRET:-}
-      - MEET_INITIAL_ADMIN_USER=${MEET_INITIAL_ADMIN_USER:-}
-      - MEET_INITIAL_ADMIN_PASSWORD=${MEET_INITIAL_ADMIN_PASSWORD:-}
-      - MEET_INITIAL_API_KEY=${MEET_INITIAL_API_KEY:-}
+    env_file:
+      - ./meet.env
     depends_on:
       - openvidu
       - ingress

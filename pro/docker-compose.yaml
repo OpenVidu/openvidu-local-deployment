@@ -178,32 +178,16 @@ services:
       - LAN_MODE=${LAN_MODE:-false}
       - LAN_DOMAIN=${LAN_DOMAIN:-}
       - LAN_PRIVATE_IP=${LAN_PRIVATE_IP:-}
-      - SERVER_PORT=6080
-      - MEET_LOG_LEVEL=${MEET_LOG_LEVEL:-info}
-      - MEET_NAME_ID=openviduMeet-LOCAL
-      - MEET_INITIAL_API_KEY=${MEET_INITIAL_API_KEY:-meet-api-key}
-      - MEET_INITIAL_ADMIN_USER=${MEET_INITIAL_ADMIN_USER:-admin}
-      - MEET_INITIAL_ADMIN_PASSWORD=${MEET_INITIAL_ADMIN_PASSWORD:-admin}
-      - MEET_COOKIE_SECURE=false
-      - MEET_INITIAL_WEBHOOK_ENABLED=true
-      - MEET_INITIAL_WEBHOOK_URL=${MEET_INITIAL_WEBHOOK_URL:-http://host.docker.internal:6080/webhook}
-      - LIVEKIT_URL_PRIVATE=ws://openvidu:7880/
       - LIVEKIT_API_KEY=${LIVEKIT_API_KEY}
       - LIVEKIT_API_SECRET=${LIVEKIT_API_SECRET}
-      - MEET_S3_BUCKET=${MEET_S3_BUCKET:-openvidu-appdata}
-      - MEET_S3_SUBBUCKET=${MEET_S3_SUBBUCKET:-openvidu-meet}
-      - MEET_S3_SERVICE_ENDPOINT=${MEET_S3_SERVICE_ENDPOINT:-http://minio:9000}
       - MEET_S3_ACCESS_KEY=${MINIO_ACCESS_KEY}
       - MEET_S3_SECRET_KEY=${MINIO_SECRET_KEY}
-      - MEET_AWS_REGION=${MEET_AWS_REGION:-us-east-1}
-      - MEET_S3_WITH_PATH_STYLE_ACCESS=${MEET_S3_WITH_PATH_STYLE_ACCESS:-true}
-      - MEET_REDIS_HOST=redis
-      - MEET_REDIS_PORT=6379
       - MEET_REDIS_PASSWORD=${REDIS_PASSWORD:-}
-      - MEET_REDIS_DB=0
       - MEET_MONGO_URI=mongodb://${MONGO_ADMIN_USERNAME}:${MONGO_ADMIN_PASSWORD}@mongo:27017/?replicaSet=rs0&readPreference=primaryPreferred
       - MEET_BASE_PATH=${MEET_BASE_PATH:-/meet}
+      - MEET_CONFIG_DIR=/config/meet.env
     volumes:
+      - ./meet.env:/config/meet.env
       - ./scripts/entrypoint_openvidu_meet.sh:/scripts/entrypoint.sh
       - ./scripts/utils.sh:/scripts/utils.sh
       - /etc/localtime:/etc/localtime:ro

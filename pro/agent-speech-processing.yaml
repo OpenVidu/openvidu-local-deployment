@@ -1,5 +1,5 @@
 # Docker image of the agent.
-docker_image: docker.io/openvidu/agent-speech-processing-cloud:main
+docker_image: docker.io/openvidu/agent-speech-processing-vosk:main
 
 # Whether to run the agent or not.
 enabled: false
@@ -18,7 +18,7 @@ live_captions:
 
   # Which speech-to-text AI provider to use [aws, azure, google, openai, azure_openai, groq, deepgram, assemblyai, fal, clova, speechmatics, gladia, sarvam, mistralai, cartesia, soniox, nvidia, elevenlabs, simplismart, vosk, sherpa]
   # The custom configuration for the selected provider must be set below
-  provider:
+  provider: vosk
 
   aws:
     # Credentials for AWS Transcribe. See https://docs.aws.amazon.com/transcribe/latest/dg/what-is.html

@@ -43,9 +43,7 @@ services:
       - redis:/data
       - /etc/localtime:/etc/localtime:ro
     command: >
-      redis-server
-      --bind 0.0.0.0
-      --requirepass ${REDIS_PASSWORD:-}
+      redis-server --bind 0.0.0.0 --requirepass ${REDIS_PASSWORD:-}
     depends_on:
       setup:
         condition: service_completed_successfully

@@ -11,9 +11,9 @@ load_threshold: 1.0
 log_level: INFO
 
 live_captions:
-  # How this agent will connect to Rooms [automatic, manual]
-  # - automatic: the agent will automatically connect to new Rooms.
+  # How this agent will connect to Rooms [manual, automatic]
   # - manual: the agent will connect to new Rooms only when your application dictates it by using the Agent Dispatch API.
+  # - automatic: the agent will automatically connect to new Rooms.
   processing: manual
 
   # Which speech-to-text AI provider to use [aws, azure, google, openai, azure_openai, groq, deepgram, assemblyai, fal, clova, speechmatics, gladia, sarvam, mistralai, cartesia, soniox, nvidia, elevenlabs, simplismart, vosk, sherpa]

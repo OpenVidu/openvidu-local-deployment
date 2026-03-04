@@ -420,6 +420,9 @@ live_captions:
     model: sherpa-onnx-streaming-zipformer-en-kroko-2025-08-06
     # Language code for reference. Auto-detected from model name if not set.
     language:
+    # Runtime provider for sherpa-onnx. Supported values: "cpu" or "cuda". Default is "cpu".
+    # Learn about GPU acceleration at https://openvidu.io/docs/ai/live-captions/#gpu-acceleration-for-sherpa-provider
+    provider:
     # Audio sample rate in Hz. Default is 16000.
     sample_rate:
     # Whether to return interim/partial results during recognition. Default is true.

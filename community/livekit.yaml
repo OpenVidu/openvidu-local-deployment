@@ -25,8 +25,6 @@ turn:
     udp_port: 3478
     relay_range_start: 40000
     relay_range_end: 50000
-    # Lifetime of issued TURN credentials. Default 24h.
-    credential_ttl: 24h
 keys:
     devkey: secret
 webhook:

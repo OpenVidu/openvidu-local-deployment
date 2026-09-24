@@ -60,6 +60,8 @@ services:
       - MINIO_DEFAULT_BUCKETS=openvidu-appdata
       - MINIO_CONSOLE_SUBPATH=/minio-console
       - MINIO_BROWSER=on
+      # Disable the update check against dl.min.io at startup
+      - MINIO_UPDATE=off
       - MINIO_BROWSER_REDIRECT_URL=http://localhost:7880/minio-console
     volumes:
       - minio-data:/bitnami/minio/data
@@ -70,7 +72,7 @@ services:
         condition: service_completed_successfully
 
   mongo:
-    image: docker.io/openvidu/mongodb:8.0.29-r0
+    image: docker.io/openvidu/mongodb:8.0.29-r1
     container_name: mongo
     restart: unless-stopped
     ports:

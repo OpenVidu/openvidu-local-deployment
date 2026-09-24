@@ -6,4 +6,4 @@ if [ "$LAN_PRIVATE_IP" != "" ] && [ "$LAN_MODE" = 'true' ]; then
     export NODE_IP="$LAN_PRIVATE_IP"
 fi
 
-./livekit-server "$@"
+exec ./livekit-server "$@"

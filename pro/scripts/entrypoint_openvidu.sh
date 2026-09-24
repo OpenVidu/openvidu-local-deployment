@@ -10,4 +10,4 @@ fi
 LIVEKIT_OPENVIDU_NODE_PRIVATE_IP="$(hostname -i)"
 export LIVEKIT_OPENVIDU_NODE_PRIVATE_IP
 
-./livekit-server "$@"
+exec ./livekit-server "$@"

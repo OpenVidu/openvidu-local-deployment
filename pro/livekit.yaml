@@ -8,7 +8,7 @@ openvidu:
     rtc:
         # WebRTC engine selection
         # Values: pion, mediasoup
-        engine: pion
+        engine: mediasoup
     mediasoup:
         # Global toggle to enable debugging logs from mediasoup.
         # In most debugging cases, using just an asterisk ("*") here is enough,

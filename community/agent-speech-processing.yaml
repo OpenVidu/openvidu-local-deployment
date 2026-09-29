@@ -141,7 +141,7 @@ live_captions:
   openai:
     # API key for OpenAI. See https://platform.openai.com/api-keys
     api_key:
-    # The OpenAI model to use for transcription. See https://platform.openai.com/docs/guides/speech-to-text
+    # The OpenAI model to use for transcription. See https://developers.openai.com/api/docs/guides/speech-to-text
     model:
     # The language of the input audio. Supplying the input language in ISO-639-1 format
     # (https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) will improve accuracy and latency.
@@ -239,18 +239,14 @@ live_captions:
     api_key:
     # ISO 639-1 language code. All languages are global and can understand different dialects/accents. To see the list of all supported languages, see https://docs.speechmatics.com/speech-to-text/languages#transcription-languages
     language:
-    # Operating point to use for the transcription per required accuracy & complexity. To learn more, see https://docs.speechmatics.com/speech-to-text/languages#operating-points
-    operating_point:
+    # Transcription model, e.g. "linden-1". See https://docs.livekit.io/agents/models/stt/speechmatics/
+    model:
     # Partial transcripts allow you to receive preliminary transcriptions and update as more context is available until the higher-accuracy final transcript is returned. Partials are returned faster but without any post-processing such as formatting. See https://docs.speechmatics.com/speech-to-text/realtime/output#partial-transcripts
     enable_partials:
     # Enable speaker diarization. When enabled, the STT engine will determine and attribute words to unique speakers. The speaker_sensitivity parameter can be used to adjust the sensitivity of diarization
     enable_diarization:
     # RFC-5646 language code to make spelling rules more consistent in the transcription output. See https://docs.speechmatics.com/features/word-tagging#output-locale
     output_locale:
-    # The delay in seconds between the end of a spoken word and returning the final transcript results. See https://docs.speechmatics.com/features/realtime-latency#configuration-example
-    max_delay:
-    # See https://docs.speechmatics.com/features/realtime-latency#configuration-example
-    max_delay_mode:
     # Configuration for speaker diarization. See https://docs.speechmatics.com/features/diarization
     speaker_diarization_config:
       # See https://docs.speechmatics.com/features/diarization#max-speakers
@@ -259,11 +255,9 @@ live_captions:
       speaker_sensitivity:
       # See https://docs.speechmatics.com/features/diarization#prefer-current-speaker
       prefer_current_speaker:
-    # Permitted punctuation marks for advanced punctuation. See https://docs.speechmatics.com/features/punctuation-settings
-    # Commented is an example of punctuation settings
-    punctuation_overrides:
-      # permitted_marks: [ ".", "," ]
-      # sensitivity: 0.4
+    # Formatter for speaker identification in the transcript, with the {speaker_id} and {text}
+    # placeholders, e.g. "{speaker_id}: {text}". Unset leaves the transcript unformatted.
+    speaker_format:
     # See https://docs.speechmatics.com/features/custom-dictionary
     # Commented below is an example of a custom dictionary
     additional_vocab:
@@ -294,9 +288,9 @@ live_captions:
   sarvam:
     # API key for Sarvam. See https://dashboard.sarvam.ai/key-management
     api_key:
-    # BCP-47 language code for supported Indian languages. See https://docs.sarvam.ai/api-reference-docs/speech-to-text/transcribe#request.body.language_code.language_code
+    # BCP-47 language code for supported Indian languages. See https://docs.sarvam.ai/api-reference/speech-to-text/transcribe#request.body.language_code.language_code
     language:
-    # The Sarvam STT model to use. See https://docs.sarvam.ai/api-reference-docs/speech-to-text/transcribe#request.body.model.model
+    # The Sarvam STT model to use. See https://docs.sarvam.ai/api-reference/speech-to-text/transcribe#request.body.model.model
     model:
 
   mistralai:
@@ -318,6 +312,8 @@ live_captions:
   soniox:
     # API key for Soniox. See https://console.soniox.com/
     api_key:
+    # The Soniox STT model to use. Defaults to "stt-rt-v5". See https://soniox.com/docs/stt/models
+    model:
     # Set language hints when possible to significantly improve accuracy. See: https://soniox.com/docs/stt/concepts/language-hints
     language_hints:
       # - "en"
@@ -350,7 +346,7 @@ live_captions:
   spitch:
     # API key for Spitch. See https://docs.spitch.app/keys
     api_key:
-    # Language short code for the generated speech. For supported values, see https://docs.spitch.app/concepts/languages
+    # Language short code for the generated speech. For supported values, see https://docs.spitch.app/features/transcription#parameters
     language:
 
   elevenlabs:
@@ -422,8 +418,17 @@ live_captions:
     # - sherpa-onnx-streaming-zipformer-de-kroko-2025-08-06 (German)
     # - sherpa-onnx-streaming-zipformer-fr-kroko-2025-08-06 (French)
     # - sherpa-onnx-streaming-zipformer-ar_en_id_ja_ru_th_vi_zh-2025-02-10 (Multilingual: Arabic, English, Indonesian, Japanese, Russian, Thai, Vietnamese, Chinese)
+    # - sherpa-onnx-nemotron-3.5-asr-streaming-0.6b-320ms-int8-2026-06-11 (Multilingual: NVIDIA Nemotron 3.5, 40 locales in one model,
+    #   320 ms chunks, int8). Only in the CPU image "docker.io/openvidu/agent-speech-processing-sherpa".
+    # - sherpa-onnx-nemotron-3.5-asr-streaming-0.6b-320ms-2026-06-11 (The same Nemotron 3.5 model in float32). Only in the GPU image
+    #   "docker.io/openvidu/agent-speech-processing-sherpa-cuda12": int8 graphs cannot run on the CUDA provider.
+    #   Nemotron locales: en-US, en-GB, es-US, es-ES, fr-FR, fr-CA, it-IT, pt-BR, pt-PT, nl-NL, de-DE, tr-TR, ru-RU, ar-AR, hi-IN, ja-JP, ko-KR,
+    #   vi-VN, uk-UA, pl-PL, sv-SE, cs-CZ, nb-NO, da-DK, bg-BG, fi-FI, hr-HR, sk-SK, zh-CN, hu-HU, ro-RO, et-EE, el-GR, lt-LT, lv-LV, mt-MT,
+    #   sl-SI, he-IL, th-TH, nn-NO
     model: sherpa-onnx-streaming-zipformer-en-kroko-2025-08-06
     # Language code for reference. Auto-detected from model name if not set.
+    # For the multilingual Nemotron models it selects the transcription language: a locale ("en-US", "es-ES", "de-DE", "ja-JP"...),
+    # a bare code ("en", "es") or "auto" (default) for automatic detection. Pinning the language is more accurate than "auto".
     language:
     # Runtime provider for sherpa-onnx. Supported values: "cpu" or "cuda". Default is "cpu".
     # Learn about GPU acceleration at https://openvidu.io/docs/ai/live-captions/#gpu-acceleration-with-nemotron
@@ -436,7 +441,7 @@ live_captions:
     num_threads:
     # Recognizer type ("transducer", "paraformer", "zipformer_ctc", "nemo_ctc", "t_one_ctc"). Auto-detected from model name if not set.
     recognizer_type:
-    # Decoding method ("greedy_search", "modified_beam_search"). Default is "greedy_search".
+    # Decoding method ("greedy_search", "modified_beam_search"). Default is "greedy_search". Nemotron models only support "greedy_search".
     decoding_method:
     # Whether to override sherpa's built-in Voice Activity Detection (VAD) with Silero's VAD. Default is false.
     use_silero_vad: false

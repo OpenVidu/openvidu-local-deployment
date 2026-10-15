@@ -3,7 +3,15 @@ openvidu:
     analytics:
         enabled: true
         interval: 10s
-        expiration: 768h # 32 days
+        # How long each class of analytics data is kept: raw events, statistics, closed tracks and
+        # subscriptions, closed rooms, participants, egress and ingress, and hourly rollups.
+        # Daily rollups are kept forever.
+        retention:
+            events: 168h # 7 days
+            stats: 168h # 7 days
+            tracks: 168h # 7 days
+            entities: 2160h # 90 days
+            rollups_hourly: 9600h # 400 days
         mongo_url: mongodb://mongoadmin:mongoadmin@mongo:27017/?replicaSet=rs0&readPreference=primaryPreferred
 
 # LiveKit configuration

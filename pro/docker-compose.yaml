@@ -105,6 +105,8 @@ services:
     depends_on:
       setup:
         condition: service_completed_successfully
+      mongo:
+        condition: service_started
 
   openvidu:
     image: docker.io/openvidu/openvidu-server-pro:main
@@ -130,6 +132,10 @@ services:
     depends_on:
       setup:
         condition: service_completed_successfully
+      redis:
+        condition: service_started
+      mongo:
+        condition: service_started
 
   ingress:
     image: docker.io/openvidu/ingress:main
@@ -149,6 +155,8 @@ services:
     depends_on:
       setup:
         condition: service_completed_successfully
+      redis:
+        condition: service_started
 
   egress:
     image: docker.io/openvidu/egress:main
@@ -165,6 +173,8 @@ services:
     depends_on:
       setup:
         condition: service_completed_successfully
+      redis:
+        condition: service_started
 
   openvidu-meet:
     image: docker.io/openvidu/openvidu-meet:main
@@ -194,6 +204,12 @@ services:
     depends_on:
       setup:
         condition: service_completed_successfully
+      redis:
+        condition: service_started
+      mongo:
+        condition: service_started
+      minio:
+        condition: service_started
 
   openvidu-v2compatibility:
     image: docker.io/openvidu/openvidu-v2compatibility:main

@@ -35,7 +35,7 @@ services:
         condition: service_completed_successfully
 
   redis:
-    image: docker.io/redis:8.10.2-alpine
+    image: docker.io/redis:8.10.3-alpine
     container_name: redis
     restart: unless-stopped
     ports:
@@ -50,7 +50,7 @@ services:
         condition: service_completed_successfully
 
   minio:
-    image: docker.io/openvidu/minio:RELEASE.2026-09-22T19-25-18Z-r0
+    image: docker.io/openvidu/minio:RELEASE.2026-10-23T20-06-51Z-r0
     restart: unless-stopped
     ports:
       - 9000:9000
@@ -72,7 +72,7 @@ services:
         condition: service_completed_successfully
 
   mongo:
-    image: docker.io/openvidu/mongodb:8.0.29-r1
+    image: docker.io/openvidu/mongodb:8.0.34-r0
     container_name: mongo
     restart: unless-stopped
     ports:

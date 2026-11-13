@@ -72,7 +72,7 @@ services:
         condition: service_completed_successfully
 
   mongo:
-    image: docker.io/openvidu/mongodb:8.0.34-r0
+    image: docker.io/openvidu/mongodb:8.0.34-r4
     container_name: mongo
     restart: unless-stopped
     ports:

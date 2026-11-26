@@ -1,6 +1,6 @@
 services:
   caddy-proxy:
-    image: docker.io/openvidu/openvidu-caddy-local:main
+    image: docker.io/openvidu/openvidu-caddy-local:3.10.0
     container_name: caddy-proxy
     restart: unless-stopped
     extra_hosts:
@@ -92,7 +92,7 @@ services:
         condition: service_completed_successfully
 
   dashboard:
-    image: docker.io/openvidu/openvidu-dashboard:main
+    image: docker.io/openvidu/openvidu-dashboard:3.10.0
     container_name: dashboard
     restart: unless-stopped
     environment:
@@ -109,7 +109,7 @@ services:
         condition: service_started
 
   openvidu:
-    image: docker.io/openvidu/openvidu-server-pro:main
+    image: docker.io/openvidu/openvidu-server-pro:3.10.0
     restart: unless-stopped
     container_name: openvidu
     extra_hosts:
@@ -138,7 +138,7 @@ services:
         condition: service_started
 
   ingress:
-    image: docker.io/openvidu/ingress:main
+    image: docker.io/openvidu/ingress:3.10.0
     container_name: ingress
     restart: unless-stopped
     extra_hosts:
@@ -159,7 +159,7 @@ services:
         condition: service_started
 
   egress:
-    image: docker.io/openvidu/egress:main
+    image: docker.io/openvidu/egress:3.10.0
     restart: unless-stopped
     container_name: egress
     extra_hosts:
@@ -177,7 +177,7 @@ services:
         condition: service_started
 
   openvidu-meet:
-    image: docker.io/openvidu/openvidu-meet:main
+    image: docker.io/openvidu/openvidu-meet:3.10.0
     container_name: openvidu-meet
     restart: on-failure
     extra_hosts:
@@ -212,7 +212,7 @@ services:
         condition: service_started
 
   openvidu-v2compatibility:
-    image: docker.io/openvidu/openvidu-v2compatibility:main
+    image: docker.io/openvidu/openvidu-v2compatibility:3.10.0
     restart: unless-stopped
     container_name: openvidu-v2compatibility
     entrypoint: /bin/sh /scripts/entrypoint.sh
@@ -254,7 +254,7 @@ services:
         condition: service_completed_successfully
 
   ready-check:
-    image: docker.io/openvidu/openvidu-operator:main
+    image: docker.io/openvidu/openvidu-operator:3.10.0
     container_name: ready-check
     restart: on-failure
     volumes:
@@ -284,7 +284,7 @@ services:
       - mongo
 
   operator:
-    image: docker.io/openvidu/openvidu-operator:main
+    image: docker.io/openvidu/openvidu-operator:3.10.0
     container_name: operator
     restart: unless-stopped
     volumes:
